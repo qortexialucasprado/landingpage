@@ -1,26 +1,178 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { resultadosItems } from "../resultadosMedia";
 
-function CarouselVideo({ src, title }: { src: string; title: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function usePrefersHover() {
+  const prefersHover = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches,
+  );
+  return prefersHover;
+}
+
+function CarouselVideo({
+  cardId,
+  src,
+  title,
+  poster,
+  isActive,
+  onActivate,
+  onDeactivate,
+}: {
+  cardId: string;
+  src: string;
+  title: string;
+  poster?: string;
+  isActive: boolean;
+  onActivate: (cardId: string) => void;
+  onDeactivate: (cardId: string) => void;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const loadedRef = useRef(false);
-  const posterTimeRef = useRef(0.1);
-  const [isHovered, setIsHovered] = useState(false);
-  const [posterReady, setPosterReady] = useState(false);
+  const prefersHover = usePrefersHover();
 
-  const seekToPosterFrame = useCallback(() => {
+  const playVideo = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const time =
-      Number.isFinite(video.duration) && video.duration > 0
-        ? Math.min(0.2, video.duration * 0.02)
-        : 0.1;
+    if (!loadedRef.current) {
+      video.src = src;
+      loadedRef.current = true;
+    }
 
-    posterTimeRef.current = time;
-    video.currentTime = time;
+    void video.play().catch(() => {});
+  }, [src]);
+
+  const stopVideo = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.pause();
+    if (loadedRef.current) {
+      video.currentTime = 0;
+    }
   }, []);
+
+  useEffect(() => {
+    if (isActive) {
+      playVideo();
+    } else {
+      stopVideo();
+    }
+  }, [isActive, playVideo, stopVideo]);
+
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (!document.hidden) return;
+      onDeactivate(cardId);
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+  }, [cardId, onDeactivate]);
+
+  const handleClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    if (isActive) {
+      onDeactivate(cardId);
+    } else {
+      onActivate(cardId);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (!prefersHover.current) return;
+    onActivate(cardId);
+  };
+
+  const handleMouseLeave = () => {
+    if (!prefersHover.current) return;
+    onDeactivate(cardId);
+  };
+
+  if (poster) {
+    return (
+      <button
+        type="button"
+        className="relative h-full w-full cursor-pointer border-0 bg-[var(--clr-surface)] p-0"
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        aria-label={
+          isActive ? `Pausar vídeo: ${title}` : `Reproduzir vídeo: ${title}`
+        }
+        aria-pressed={isActive}
+      >
+        <img
+          src={poster}
+          alt={title}
+          className={`h-full w-full object-cover transition-opacity duration-200 ${isActive ? "opacity-0" : "opacity-100"}`}
+          loading="lazy"
+          decoding="async"
+        />
+        {!isActive && (
+          <div
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+            style={{
+              color: "var(--clr-text-disabled)",
+              backgroundColor: "rgba(5, 13, 26, 0.35)",
+            }}
+            aria-hidden
+          >
+            <iconify-icon icon="solar:play-circle-linear" width="40" />
+          </div>
+        )}
+        <video
+          ref={videoRef}
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-200 ${isActive ? "opacity-100" : "opacity-0"}`}
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-hidden={!isActive}
+        />
+      </button>
+    );
+  }
+
+  return (
+    <CarouselVideoFallback
+      cardId={cardId}
+      src={src}
+      title={title}
+      isActive={isActive}
+      onActivate={onActivate}
+      onDeactivate={onDeactivate}
+    />
+  );
+}
+
+function CarouselVideoFallback({
+  cardId,
+  src,
+  title,
+  isActive,
+  onActivate,
+  onDeactivate,
+}: {
+  cardId: string;
+  src: string;
+  title: string;
+  isActive: boolean;
+  onActivate: (cardId: string) => void;
+  onDeactivate: (cardId: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const loadedRef = useRef(false);
+  const [posterReady, setPosterReady] = useState(false);
+  const prefersHover = usePrefersHover();
 
   const loadPosterFrame = useCallback(() => {
     const video = videoRef.current;
@@ -30,23 +182,47 @@ function CarouselVideo({ src, title }: { src: string; title: string }) {
     video.src = src;
     video.preload = "metadata";
 
-    const markPosterReady = () => {
+    const markReady = () => {
       video.pause();
       setPosterReady(true);
     };
 
-    const handleLoadedData = () => {
-      seekToPosterFrame();
-      window.setTimeout(() => {
-        if (video.readyState >= 2) {
-          markPosterReady();
-        }
-      }, 400);
-    };
+    video.addEventListener(
+      "loadeddata",
+      () => {
+        video.currentTime = 0.1;
+        window.setTimeout(markReady, 400);
+      },
+      { once: true },
+    );
+    video.addEventListener("seeked", markReady, { once: true });
+  }, [src]);
 
-    video.addEventListener("loadeddata", handleLoadedData, { once: true });
-    video.addEventListener("seeked", markPosterReady, { once: true });
-  }, [src, seekToPosterFrame]);
+  const playVideo = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (!loadedRef.current) {
+      loadPosterFrame();
+    }
+    void video.play().catch(() => {});
+  }, [loadPosterFrame]);
+
+  const stopVideo = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.pause();
+    if (loadedRef.current) {
+      video.currentTime = 0;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isActive) {
+      playVideo();
+    } else {
+      stopVideo();
+    }
+  }, [isActive, playVideo, stopVideo]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -54,73 +230,61 @@ function CarouselVideo({ src, title }: { src: string; title: string }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          loadPosterFrame();
-        }
+        if (entry.isIntersecting) loadPosterFrame();
       },
-      { rootMargin: "200px 0px", threshold: 0 },
+      { rootMargin: "120px 0px", threshold: 0 },
     );
 
     observer.observe(container);
     return () => observer.disconnect();
   }, [loadPosterFrame]);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (!loadedRef.current) {
-      loadPosterFrame();
+  const handleClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    if (isActive) {
+      onDeactivate(cardId);
+    } else {
+      onActivate(cardId);
     }
+  };
 
-    void video.play().catch(() => {});
+  const handleMouseEnter = () => {
+    if (!prefersHover.current) return;
+    onActivate(cardId);
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
-    const video = videoRef.current;
-    if (!video || !loadedRef.current) return;
-
-    video.pause();
-    video.currentTime = posterTimeRef.current;
+    if (!prefersHover.current) return;
+    onDeactivate(cardId);
   };
 
-  useEffect(() => {
-    const onVisibilityChange = () => {
-      if (!document.hidden) return;
-
-      const video = videoRef.current;
-      if (!video) return;
-
-      video.pause();
-      if (loadedRef.current) {
-        video.currentTime = posterTimeRef.current;
-      }
-      setIsHovered(false);
-    };
-
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () =>
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-  }, []);
-
   return (
-    <div
-      ref={containerRef}
-      className="relative h-full w-full cursor-pointer"
-      style={{ backgroundColor: "var(--clr-surface)" }}
+    <button
+      type="button"
+      className="relative h-full w-full cursor-pointer border-0 bg-[var(--clr-surface)] p-0"
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      aria-label={
+        isActive ? `Pausar vídeo: ${title}` : `Reproduzir vídeo: ${title}`
+      }
+      aria-pressed={isActive}
     >
-      {!isHovered && (
+      <div ref={containerRef} className="absolute inset-0" aria-hidden />
+      {!posterReady && !isActive && (
+        <div
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          style={{ color: "var(--clr-text-disabled)" }}
+        >
+          <iconify-icon icon="solar:play-circle-linear" width="40" />
+        </div>
+      )}
+      {!isActive && posterReady && (
         <div
           className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
           style={{
             color: "var(--clr-text-disabled)",
-            backgroundColor: posterReady
-              ? "rgba(5, 13, 26, 0.35)"
-              : "transparent",
+            backgroundColor: "rgba(5, 13, 26, 0.35)",
           }}
           aria-hidden
         >
@@ -129,23 +293,45 @@ function CarouselVideo({ src, title }: { src: string; title: string }) {
       )}
       <video
         ref={videoRef}
-        className="h-full w-full object-cover"
-        style={{ opacity: posterReady ? 1 : 0 }}
+        className="pointer-events-none h-full w-full object-cover"
+        style={{ opacity: posterReady || isActive ? 1 : 0 }}
         muted
         loop
         playsInline
         preload="none"
-        aria-label={title}
+        aria-hidden={!isActive}
       />
-    </div>
+    </button>
   );
 }
 
-function MediaCard({ item }: { item: (typeof resultadosItems)[number] }) {
+function MediaCard({
+  item,
+  cardId,
+  activeCardId,
+  onActivate,
+  onDeactivate,
+}: {
+  item: (typeof resultadosItems)[number];
+  cardId: string;
+  activeCardId: string | null;
+  onActivate: (cardId: string) => void;
+  onDeactivate: (cardId: string) => void;
+}) {
+  const isActive = activeCardId === cardId;
+
   return (
     <article className="relative mx-2 w-52 shrink-0 overflow-hidden rounded-lg border border-white/5 aspect-[3/4] sm:w-56 md:w-64 [content-visibility:auto]">
       {item.type === "video" ? (
-        <CarouselVideo src={item.src} title={item.title} />
+        <CarouselVideo
+          cardId={cardId}
+          src={item.src}
+          title={item.title}
+          poster={item.poster}
+          isActive={isActive}
+          onActivate={onActivate}
+          onDeactivate={onDeactivate}
+        />
       ) : (
         <img
           src={item.src}
@@ -169,19 +355,39 @@ function MediaCard({ item }: { item: (typeof resultadosItems)[number] }) {
 }
 
 export function ResultadosCarousel() {
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+
+  const handleActivate = useCallback((cardId: string) => {
+    setActiveCardId(cardId);
+  }, []);
+
+  const handleDeactivate = useCallback((cardId: string) => {
+    setActiveCardId((prev) => (prev === cardId ? null : prev));
+  }, []);
+
   if (resultadosItems.length === 0) return null;
 
   const loopItems = [...resultadosItems, ...resultadosItems];
 
   return (
     <div
-      className="resultados-carousel mb-20 min-h-64 w-full overflow-hidden -mx-5 md:-mx-10 lg:-mx-20"
+      className={`resultados-carousel mb-20 min-h-64 w-full overflow-hidden -mx-5 md:-mx-10 lg:-mx-20${activeCardId ? " is-video-playing" : ""}`}
       aria-label="Carrossel de resultados antes e depois"
     >
       <div className="flex w-max animate-resultados-scroll">
-        {loopItems.map((item, idx) => (
-          <MediaCard key={`${item.src}-${idx}`} item={item} />
-        ))}
+        {loopItems.map((item, idx) => {
+          const cardId = `${item.src}::${idx}`;
+          return (
+            <MediaCard
+              key={cardId}
+              item={item}
+              cardId={cardId}
+              activeCardId={activeCardId}
+              onActivate={handleActivate}
+              onDeactivate={handleDeactivate}
+            />
+          );
+        })}
       </div>
     </div>
   );

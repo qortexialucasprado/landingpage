@@ -416,14 +416,14 @@ export default function App() {
 
       {/* STRIP DE PROVA RÁPIDA */}
       <section
-        className="py-6 md:py-8 relative z-20"
+        className="py-8 md:py-8 relative z-20"
         style={{
           background:
             "linear-gradient(135deg, #0B3D91 0%, #1565C0 100%)",
         }}
       >
         <div className="container mx-auto px-5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 md:gap-10 text-center sm:text-left reveal-scale">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap lg:flex-nowrap items-center justify-between gap-8 sm:gap-6 md:gap-10 text-center sm:text-left reveal-scale">
             {[
               { value: "+200", label: "Alunos transformados" },
               {
@@ -435,18 +435,17 @@ export default function App() {
                 value: "3",
                 label: "Formas de treinar",
                 divider: true,
-                hidden: "hidden md:block",
               },
               {
                 value: "RESULTADO",
                 sublabel: "REAL E COMPROVADO",
-                hidden: "hidden lg:block",
                 divider: true,
+                alignRight: true,
               },
             ].map((item, idx) => (
               <div
                 key={idx}
-                className={`flex-1 ${item.hidden || ""}`}
+                className={`w-full sm:flex-1 sm:w-auto ${item.alignRight ? "sm:text-left lg:text-right" : ""}`}
               >
                 {item.divider && idx > 0 && (
                   <div

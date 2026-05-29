@@ -290,8 +290,14 @@
     will-change: transform;
   }
 
-  .resultados-carousel:hover .animate-resultados-scroll {
+  .resultados-carousel.is-video-playing .animate-resultados-scroll {
     animation-play-state: paused;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .resultados-carousel:hover .animate-resultados-scroll {
+      animation-play-state: paused;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

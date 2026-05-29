@@ -2,6 +2,7 @@ export type ResultadoItem = {
   src: string;
   title: string;
   type: "image" | "video";
+  poster?: string;
 };
 
 const mediaGlob = import.meta.glob(
@@ -9,9 +10,32 @@ const mediaGlob = import.meta.glob(
   { eager: true, query: "?url", import: "default" },
 ) as Record<string, string>;
 
+const posterGlob = import.meta.glob(
+  "../imports/Html→Body/AntesDepois/*-{thumbnail,poster}.{webp,jpg,jpeg,png}",
+  { eager: true, query: "?url", import: "default" },
+) as Record<string, string>;
+
 function getTitleFromFilename(filename: string): string {
   const base = filename.replace(/\.[^.]+$/, "");
   return base.replace(/\d+$/, "");
+}
+
+function getVideoBaseKey(filename: string): string {
+  return filename.replace(/\.(mp4|webm|mov)$/i, "");
+}
+
+function buildPosterMap(): Map<string, string> {
+  const map = new Map<string, string>();
+
+  for (const [path, src] of Object.entries(posterGlob)) {
+    const filename = path.split("/").pop() ?? path;
+    const match = filename.match(/^(.+?)-(thumbnail|poster)\./i);
+    if (match) {
+      map.set(match[1], src);
+    }
+  }
+
+  return map;
 }
 
 function shuffle<T>(array: T[]): T[] {
@@ -23,14 +47,28 @@ function shuffle<T>(array: T[]): T[] {
   return arr;
 }
 
+const posterByVideoBase = buildPosterMap();
+
 const items: ResultadoItem[] = Object.entries(mediaGlob).map(
   ([path, src]) => {
     const filename = path.split("/").pop() ?? path;
     const isVideo = /\.(mp4|webm|mov)$/i.test(filename);
+
+    if (!isVideo) {
+      return {
+        src,
+        title: getTitleFromFilename(filename),
+        type: "image",
+      };
+    }
+
+    const videoBase = getVideoBaseKey(filename);
+
     return {
       src,
       title: getTitleFromFilename(filename),
-      type: isVideo ? "video" : "image",
+      type: "video",
+      poster: posterByVideoBase.get(videoBase),
     };
   },
 );
