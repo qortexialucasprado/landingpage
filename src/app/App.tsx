@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import logoLp from "../imports/Html→Body/Logo_LP.png";
 import logoLucasPrado from "../imports/Html→Body/Logo_Lucas_Prado.png";
+import lucasPradoPerfil from "../imports/Html→Body/Lucas.Prado.png";
 import { ResultadosCarousel } from "./components/ResultadosCarousel";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { getWhatsAppUrl, siteEnv } from "../config/env";
@@ -1149,11 +1150,13 @@ export default function App() {
                     "linear-gradient(to bottom, var(--clr-primary), transparent)",
                 }}
               ></div>
-              <div className="relative aspect-[3/4] rounded-xl overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.6)]">
+              <div className="relative w-full max-w-[589px] rounded-xl overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.6)]">
                 <img
-                  src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop"
-                  className="w-full h-full object-cover"
+                  src={lucasPradoPerfil}
+                  className="block h-auto w-full"
                   alt="Lucas Prado - Perfil"
+                  width={589}
+                  height={900}
                 />
                 <div className="absolute inset-0 border border-white/10 rounded-xl pointer-events-none"></div>
               </div>
