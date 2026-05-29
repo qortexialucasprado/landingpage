@@ -106,7 +106,7 @@ export default function App() {
               href="#"
               onClick={(e) => scrollToSection(e, "#")}
               style={{ fontFamily: "var(--font-display)" }}
-              className="font-extrabold text-2xl text-white tracking-tight flex items-center gap-2"
+              className="font-bold text-2xl text-white tracking-tight flex items-center gap-2"
             >
               <img
                 src={logoLp}
@@ -259,7 +259,7 @@ export default function App() {
               fontFamily: "var(--font-display)",
               color: "var(--clr-primary)",
             }}
-            className="font-extrabold text-9xl md:text-[12rem] lg:text-[16rem] opacity-5 tracking-tighter leading-none whitespace-nowrap"
+            className="font-bold text-9xl md:text-[12rem] lg:text-[16rem] opacity-5 tracking-tighter leading-none whitespace-nowrap"
           >
             LUCAS PRADO
           </h1>
@@ -277,7 +277,7 @@ export default function App() {
                 fontFamily: "var(--font-display)",
                 color: "white",
               }}
-              className="font-extrabold text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.9] mb-6"
+              className="font-bold text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.9] mb-6"
             >
               <span className="block reveal-up">
                 SEM FRESCURA.
@@ -382,7 +382,7 @@ export default function App() {
                         ? "var(--clr-primary)"
                         : "white",
                     }}
-                    className="font-extrabold text-xl md:text-2xl tracking-tight"
+                    className="font-bold text-xl md:text-2xl tracking-tight"
                   >
                     {stat.value}
                   </div>
@@ -434,7 +434,7 @@ export default function App() {
                 )}
                 <div
                   style={{ fontFamily: "var(--font-display)" }}
-                  className="font-extrabold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none"
+                  className="font-bold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none"
                 >
                   {item.value}
                 </div>
@@ -451,7 +451,7 @@ export default function App() {
                     style={{
                       fontFamily: "var(--font-display)",
                     }}
-                    className="font-extrabold text-sm sm:text-lg md:text-xl text-white/70 tracking-tight leading-tight"
+                    className="font-bold text-sm sm:text-lg md:text-xl text-white/70 tracking-tight leading-tight"
                   >
                     {item.sublabel}
                   </div>
@@ -496,7 +496,7 @@ export default function App() {
                   fontFamily: "var(--font-display)",
                   color: "white",
                 }}
-                className="font-extrabold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-8 reveal-up"
+                className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-8 reveal-up"
               >
                 VOCÊ NÃO
                 <br />
@@ -656,7 +656,7 @@ export default function App() {
                 fontFamily: "var(--font-display)",
                 color: "white",
               }}
-              className="font-extrabold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-6 reveal-up delay-100"
+              className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-6 reveal-up delay-100"
             >
               UM MÉTODO SIMPLES
               <br />
@@ -770,7 +770,7 @@ export default function App() {
                 fontFamily: "var(--font-display)",
                 color: "white",
               }}
-              className="font-extrabold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-6 reveal-up"
+              className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-6 reveal-up"
             >
               ALUNOS REAIS.
               <br />
@@ -926,7 +926,7 @@ export default function App() {
                 fontFamily: "var(--font-display)",
                 color: "white",
               }}
-              className="font-extrabold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-6 reveal-up delay-100"
+              className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-6 reveal-up delay-100"
             >
               VOCÊ ESCOLHE
               <br />
@@ -1037,7 +1037,7 @@ export default function App() {
                         fontFamily: "var(--font-display)",
                         color: "white",
                       }}
-                      className={`font-extrabold tracking-tight ${mode.highlight ? "text-4xl" : "text-3xl"}`}
+                      className={`font-bold tracking-tight ${mode.highlight ? "text-4xl" : "text-3xl"}`}
                     >
                       {mode.title}
                     </h3>
@@ -1174,7 +1174,7 @@ export default function App() {
                   fontFamily: "var(--font-display)",
                   color: "white",
                 }}
-                className="font-extrabold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-8 reveal-up"
+                className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-8 reveal-up"
               >
                 PERSONAL TRAINER
                 <br />
@@ -1318,7 +1318,7 @@ export default function App() {
                 fontFamily: "var(--font-display)",
                 color: "white",
               }}
-              className="font-extrabold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-16 text-center reveal-up delay-100"
+              className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-16 text-center reveal-up delay-100"
             >
               PERGUNTAS DIRETAS.
             </h2>
@@ -1414,13 +1414,13 @@ export default function App() {
               color: "var(--clr-primary)",
             }}
           >
-            <span className="font-extrabold text-2xl md:text-4xl tracking-widest">
+            <span className="font-bold text-2xl md:text-4xl tracking-widest">
               S E G U I R · N O · I N S T A G R A M · @ T E A M
               L U C A S P R A D O · C O M E Ç A R · A G O R A ·
               S E M · E N R O L A Ç Ã O · R E S U L T A D O · R
               E A L ·
             </span>
-            <span className="font-extrabold text-2xl md:text-4xl tracking-widest">
+            <span className="font-bold text-2xl md:text-4xl tracking-widest">
               S E G U I R · N O · I N S T A G R A M · @ T E A M
               L U C A S P R A D O · C O M E Ç A R · A G O R A ·
               S E M · E N R O L A Ç Ã O · R E S U L T A D O · R
@@ -1435,7 +1435,7 @@ export default function App() {
               fontFamily: "var(--font-display)",
               color: "white",
             }}
-            className="font-extrabold text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.9] mb-8 reveal-up"
+            className="font-bold text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.9] mb-8 reveal-up"
           >
             CHEGA DE
             <br />

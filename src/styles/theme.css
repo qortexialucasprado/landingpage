@@ -24,6 +24,7 @@
 
   /* Typography */
   --font-display: 'Barlow Condensed', sans-serif;
+  --font-display-weight: 700;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -168,12 +169,12 @@
 
   h1 {
     font-family: var(--font-display);
-    font-weight: 900;
+    font-weight: var(--font-display-weight);
   }
 
   h2 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: var(--font-display-weight);
   }
 
   h3 {
