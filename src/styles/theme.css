@@ -257,6 +257,14 @@
     color: var(--clr-primary);
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+
+  @media (min-width: 768px) {
+    .eyebrow {
+      font-size: 0.75rem;
+    }
   }
 
   @keyframes float {

@@ -2,6 +2,7 @@ import {
   createContext,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
+  type RefObject,
   useCallback,
   useContext,
   useEffect,
@@ -13,6 +14,19 @@ import { resultadosItems } from "../resultadosMedia";
 
 const SCROLL_DURATION_S = 200;
 const DRAG_THRESHOLD_PX = 8;
+
+function isCardHiddenInViewport(
+  card: HTMLElement,
+  viewport: HTMLElement,
+): boolean {
+  const cardRect = card.getBoundingClientRect();
+  const viewportRect = viewport.getBoundingClientRect();
+
+  return (
+    cardRect.right <= viewportRect.left ||
+    cardRect.left >= viewportRect.right
+  );
+}
 
 type CarouselInteractionContextValue = {
   suppressNextClick: () => void;
@@ -508,19 +522,58 @@ function MediaCard({
   item,
   cardId,
   activeCardId,
+  viewportRef,
+  onActiveCardElementChange,
   onActivate,
   onDeactivate,
 }: {
   item: (typeof resultadosItems)[number];
   cardId: string;
   activeCardId: string | null;
+  viewportRef: RefObject<HTMLDivElement | null>;
+  onActiveCardElementChange: (element: HTMLElement | null) => void;
   onActivate: (cardId: string) => void;
   onDeactivate: (cardId: string) => void;
 }) {
   const isActive = activeCardId === cardId;
+  const articleRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!isActive || item.type !== "video") {
+      onActiveCardElementChange(null);
+      return;
+    }
+
+    onActiveCardElementChange(articleRef.current);
+    return () => onActiveCardElementChange(null);
+  }, [isActive, item.type, onActiveCardElementChange]);
+
+  useEffect(() => {
+    if (!isActive || item.type !== "video") return;
+
+    const article = articleRef.current;
+    const viewport = viewportRef.current;
+    if (!article || !viewport) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          onDeactivate(cardId);
+        }
+      },
+      { root: viewport, threshold: 0 },
+    );
+
+    observer.observe(article);
+    return () => observer.disconnect();
+  }, [cardId, isActive, item.type, onDeactivate, viewportRef]);
 
   return (
-    <article className="relative mx-2 w-52 shrink-0 overflow-hidden rounded-lg border border-white/5 aspect-[3/4] sm:w-56 md:w-64 [content-visibility:auto]">
+    <article
+      ref={articleRef}
+      data-carousel-card={cardId}
+      className="relative mx-2 w-52 shrink-0 overflow-hidden rounded-lg border border-white/5 aspect-[3/4] sm:w-56 md:w-64 [content-visibility:auto]"
+    >
       {item.type === "video" ? (
         <CarouselVideo
           cardId={cardId}
@@ -542,7 +595,7 @@ function MediaCard({
         />
       )}
       <div
-        className="pointer-events-none absolute top-2 left-2 z-20 rounded px-2 py-1 text-[0.6rem] text-white backdrop-blur-sm"
+        className="pointer-events-none absolute top-2 left-2 z-20 rounded px-2 py-1 text-xs md:text-[0.6rem] text-white backdrop-blur-sm"
         style={{
           backgroundColor: "rgba(5, 13, 26, 0.8)",
           fontFamily: "var(--font-mono)",
@@ -557,6 +610,8 @@ function MediaCard({
 export function ResultadosCarousel() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
   const suppressClickRef = useRef(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const activeCardElementRef = useRef<HTMLElement | null>(null);
 
   const handleActivate = useCallback((cardId: string) => {
     setActiveCardId(cardId);
@@ -565,6 +620,24 @@ export function ResultadosCarousel() {
   const handleDeactivate = useCallback((cardId: string) => {
     setActiveCardId((prev) => (prev === cardId ? null : prev));
   }, []);
+
+  const handleActiveCardElementChange = useCallback(
+    (element: HTMLElement | null) => {
+      activeCardElementRef.current = element;
+    },
+    [],
+  );
+
+  const pauseActiveVideoIfHidden = useCallback(() => {
+    const cardId = activeCardId;
+    const viewport = viewportRef.current;
+    const card = activeCardElementRef.current;
+    if (!cardId || !viewport || !card) return;
+
+    if (isCardHiddenInViewport(card, viewport)) {
+      handleDeactivate(cardId);
+    }
+  }, [activeCardId, handleDeactivate]);
 
   const scroll = useInfiniteCarouselScroll({
     paused: Boolean(activeCardId),
@@ -600,16 +673,23 @@ export function ResultadosCarousel() {
   return (
     <CarouselInteractionContext.Provider value={interactionValue}>
       <div
+        ref={viewportRef}
         className={carouselClassName}
         aria-label="Carrossel de resultados antes e depois"
         onPointerDown={scroll.onPointerDown}
-        onPointerMove={scroll.onPointerMove}
+        onPointerMove={(e) => {
+          scroll.onPointerMove(e);
+          if (scroll.didDragRef.current) {
+            pauseActiveVideoIfHidden();
+          }
+        }}
         onPointerUp={(e) => {
           const wasDrag = scroll.didDragRef.current;
           scroll.onPointerUp(e);
           if (wasDrag) {
             suppressClickRef.current = true;
           }
+          pauseActiveVideoIfHidden();
         }}
         onPointerCancel={scroll.onPointerCancel}
         onMouseEnter={scroll.onMouseEnter}
@@ -628,6 +708,8 @@ export function ResultadosCarousel() {
                 item={item}
                 cardId={cardId}
                 activeCardId={activeCardId}
+                viewportRef={viewportRef}
+                onActiveCardElementChange={handleActiveCardElementChange}
                 onActivate={handleActivate}
                 onDeactivate={handleDeactivate}
               />

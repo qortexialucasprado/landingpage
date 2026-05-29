@@ -195,7 +195,7 @@ export default function App() {
                     fontFamily: "var(--font-mono)",
                     color: "var(--clr-text-mid)",
                   }}
-                  className="text-sm hover:text-white transition-colors"
+                  className="text-base hover:text-white transition-colors"
                 >
                   {item.label}
                 </a>
@@ -212,7 +212,7 @@ export default function App() {
           }}
         >
           <div
-            className="container mx-auto px-5 text-center text-[0.65rem]"
+            className="container mx-auto px-5 text-center text-xs md:text-[0.65rem]"
             style={{
               fontFamily: "var(--font-mono)",
               color: "var(--clr-text-lo)",
@@ -308,7 +308,7 @@ export default function App() {
                 fontFamily: "var(--font-body)",
                 color: "var(--clr-text-lo)",
               }}
-              className="font-light text-sm md:text-base mb-10 reveal-up delay-400 max-w-lg leading-relaxed"
+              className="font-light text-base mb-10 reveal-up delay-400 max-w-lg leading-relaxed"
             >
               Não importa se você quer emagrecer, ganhar massa
               ou simplesmente se sentir bem. O caminho existe —
@@ -320,7 +320,7 @@ export default function App() {
                 href={siteEnv.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-primary px-8 py-4 text-xs text-center flex items-center justify-center gap-2"
+                className="btn-primary px-8 py-4 text-sm md:text-xs text-center flex items-center justify-center gap-2"
               >
                 <iconify-icon
                   icon="solar:instagram-linear"
@@ -333,7 +333,7 @@ export default function App() {
                 onClick={(e) =>
                   scrollToSection(e, "#modalidades")
                 }
-                className="btn-secondary px-8 py-4 text-xs text-center"
+                className="btn-secondary px-8 py-4 text-sm md:text-xs text-center"
               >
                 Quero Começar
               </a>
@@ -371,7 +371,7 @@ export default function App() {
                       fontFamily: "var(--font-mono)",
                       color: "var(--clr-text-lo)",
                     }}
-                    className="text-[0.65rem] mb-1"
+                    className="text-xs md:text-[0.65rem] mb-1"
                   >
                     {stat.label}
                   </div>
@@ -441,7 +441,7 @@ export default function App() {
                 {item.label && (
                   <div
                     style={{ fontFamily: "var(--font-mono)" }}
-                    className="text-[0.65rem] sm:text-xs text-white/70 mt-0.5 leading-tight"
+                    className="text-xs md:text-[0.65rem] text-white/70 mt-0.5 leading-tight"
                   >
                     {item.label}
                   </div>
@@ -551,7 +551,7 @@ export default function App() {
                         fontFamily: "var(--font-body)",
                         color: "var(--clr-text-mid)",
                       }}
-                      className="text-sm"
+                      className="text-base md:text-sm"
                     >
                       {item.text}
                       <strong className="font-normal text-white">
@@ -611,7 +611,7 @@ export default function App() {
                       fontFamily: "var(--font-body)",
                       color: "var(--clr-text-lo)",
                     }}
-                    className="text-sm"
+                          className="text-base md:text-sm"
                   >
                     {item.desc}
                   </p>
@@ -721,7 +721,7 @@ export default function App() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div
-                    className={`absolute top-4 left-4 z-20 px-3 py-1 rounded text-xs ${step.highlight ? "bg-[#2979FF] text-white" : "bg-[#050D1A]/80 backdrop-blur-sm text-[#2979FF] border border-[#2979FF]/30"}`}
+                    className={`absolute top-4 left-4 z-20 px-3 py-1 rounded text-sm md:text-xs ${step.highlight ? "bg-[#2979FF] text-white" : "bg-[#050D1A]/80 backdrop-blur-sm text-[#2979FF] border border-[#2979FF]/30"}`}
                     style={{ fontFamily: "var(--font-mono)" }}
                   >
                     {step.num}
@@ -741,7 +741,7 @@ export default function App() {
                     fontFamily: "var(--font-body)",
                     color: "var(--clr-text-lo)",
                   }}
-                  className="text-sm leading-relaxed"
+                  className="text-base md:text-sm leading-relaxed"
                 >
                   {step.desc}
                 </p>
@@ -851,7 +851,7 @@ export default function App() {
                     fontFamily: "var(--font-body)",
                     color: "var(--clr-text-mid)",
                   }}
-                  className="text-sm md:text-base mb-8 italic flex-1"
+                  className="text-base md:text-base mb-8 italic flex-1"
                 >
                   "{testimonial.quote}"
                 </p>
@@ -887,7 +887,7 @@ export default function App() {
                         fontFamily: "var(--font-mono)",
                         color: "var(--clr-text-lo)",
                       }}
-                      className="text-[0.6rem]"
+                      className="text-xs md:text-[0.6rem]"
                     >
                       {testimonial.type}
                     </p>
@@ -1006,7 +1006,7 @@ export default function App() {
               >
                 {mode.highlight && (
                   <div
-                    className="absolute top-4 right-4 z-30 px-3 py-1 rounded text-[0.6rem] text-white tracking-wider"
+                    className="absolute top-4 right-4 z-30 px-3 py-1 rounded text-xs md:text-[0.6rem] text-white tracking-wider"
                     style={{
                       backgroundColor: "var(--clr-primary)",
                       fontFamily: "var(--font-mono)",
@@ -1046,7 +1046,7 @@ export default function App() {
                         fontFamily: "var(--font-mono)",
                         color: "var(--clr-text-lo)",
                       }}
-                      className="text-[0.65rem]"
+                      className="text-xs md:text-[0.65rem]"
                     >
                       {mode.subtitle}
                     </p>
@@ -1064,7 +1064,7 @@ export default function App() {
                     {mode.features.map((feature, fidx) => (
                       <li
                         key={fidx}
-                        className="flex items-center gap-3 text-sm"
+                        className="flex items-center gap-3 text-base md:text-sm"
                         style={{
                           fontFamily: "var(--font-body)",
                           color: "var(--clr-text-mid)",
@@ -1101,7 +1101,7 @@ export default function App() {
                     href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-full py-${mode.highlight ? "4" : "3"} text-center text-xs ${mode.highlight ? "btn-primary" : "btn-secondary"}`}
+                    className={`w-full py-${mode.highlight ? "4" : "3"} text-center text-sm md:text-xs ${mode.highlight ? "btn-primary" : "btn-secondary"}`}
                     style={{ fontFamily: "var(--font-mono)" }}
                   >
                     {mode.highlight
@@ -1118,7 +1118,7 @@ export default function App() {
               fontFamily: "var(--font-mono)",
               color: "var(--clr-text-disabled)",
             }}
-            className="text-center text-[0.65rem] mt-12 reveal-up delay-400"
+            className="text-center text-xs md:text-[0.65rem] mt-12 reveal-up delay-400"
           >
             VALORES E DISPONIBILIDADE VIA WHATSAPP · SEM
             COMPROMISSO NA PRIMEIRA CONVERSA
@@ -1249,7 +1249,7 @@ export default function App() {
                           fontFamily: "var(--font-mono)",
                           color: "var(--clr-text-disabled)",
                         }}
-                        className="text-[0.65rem] mb-1"
+                        className="text-xs md:text-[0.65rem] mb-1"
                       >
                         {item.label}
                       </h4>
@@ -1262,7 +1262,7 @@ export default function App() {
                             fontFamily: "var(--font-body)",
                             color: "var(--clr-text-mid)",
                           }}
-                          className="text-sm hover:text-[#2979FF] transition-colors"
+                          className="text-base md:text-sm hover:text-[#2979FF] transition-colors"
                         >
                           {item.value}
                         </a>
@@ -1272,7 +1272,7 @@ export default function App() {
                             fontFamily: "var(--font-body)",
                             color: "var(--clr-text-mid)",
                           }}
-                          className="text-sm"
+                          className="text-base md:text-sm"
                         >
                           {item.value}
                         </p>
@@ -1460,7 +1460,7 @@ export default function App() {
               href={siteEnv.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary px-10 py-5 text-sm text-center flex items-center justify-center gap-2"
+              className="btn-primary px-10 py-5 text-base md:text-sm text-center flex items-center justify-center gap-2"
             >
               <iconify-icon
                 icon="solar:instagram-linear"
@@ -1472,7 +1472,7 @@ export default function App() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary px-10 py-5 text-sm text-center flex items-center justify-center gap-2"
+              className="btn-secondary px-10 py-5 text-base md:text-sm text-center flex items-center justify-center gap-2"
             >
               <iconify-icon
                 icon="solar:phone-calling-linear"
@@ -1522,7 +1522,7 @@ export default function App() {
                   fontFamily: "var(--font-mono)",
                   color: "var(--clr-text-disabled)",
                 }}
-                className="max-w-xs border-t border-white/10 pt-4 text-xs tracking-[0.2em]"
+                className="max-w-xs border-t border-white/10 pt-4 text-sm md:text-xs tracking-[0.2em]"
               >
                 RESULTADO SEM FRESCURA.
               </p>
@@ -1534,12 +1534,12 @@ export default function App() {
                   fontFamily: "var(--font-mono)",
                   color: "white",
                 }}
-                className="text-xs mb-6"
+                className="text-sm md:text-xs mb-6"
               >
                 NAVEGAÇÃO
               </h4>
               <ul
-                className="space-y-3 text-sm"
+                className="space-y-3 text-base md:text-sm"
                 style={{
                   fontFamily: "var(--font-body)",
                   color: "var(--clr-text-lo)",
@@ -1575,12 +1575,12 @@ export default function App() {
                   fontFamily: "var(--font-mono)",
                   color: "white",
                 }}
-                className="text-xs mb-6"
+                className="text-sm md:text-xs mb-6"
               >
                 CONTATO
               </h4>
               <ul
-                className="space-y-4 text-sm"
+                className="space-y-4 text-base md:text-sm"
                 style={{
                   fontFamily: "var(--font-body)",
                   color: "var(--clr-text-lo)",
@@ -1636,7 +1636,7 @@ export default function App() {
                 fontFamily: "var(--font-mono)",
                 color: "var(--clr-text-disabled)",
               }}
-              className="text-[0.65rem]"
+              className="text-xs md:text-[0.65rem]"
             >
               LUCAS PRADO PERSONAL TRAINER · © 2026
             </p>
