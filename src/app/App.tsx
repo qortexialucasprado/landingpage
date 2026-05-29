@@ -3,8 +3,9 @@ import logoLp from "../imports/Html→Body/Logo_LP.png";
 import logoLucasPrado from "../imports/Html→Body/Logo_Lucas_Prado.png";
 import { ResultadosCarousel } from "./components/ResultadosCarousel";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
+import { getWhatsAppUrl, siteEnv } from "../config/env";
 
-const WHATSAPP_URL = "https://wa.me/5521968261797";
+const WHATSAPP_URL = getWhatsAppUrl();
 
 export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -314,7 +315,7 @@ export default function App() {
 
             <div className="flex flex-col sm:flex-row gap-4 reveal-scale delay-500">
               <a
-                href="https://instagram.com/teamlucasprado"
+                href={siteEnv.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary px-8 py-4 text-xs text-center flex items-center justify-center gap-2"
@@ -1225,8 +1226,8 @@ export default function App() {
                   {
                     icon: "solar:instagram-linear",
                     label: "INSTAGRAM",
-                    value: "@teamlucasprado",
-                    link: "https://instagram.com/teamlucasprado",
+                    value: `@${siteEnv.instagramHandle}`,
+                    link: siteEnv.instagramUrl,
                   },
                 ].map((item, idx) => (
                   <div
@@ -1440,7 +1441,7 @@ export default function App() {
 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto reveal-scale delay-200">
             <a
-              href="https://instagram.com/teamlucasprado"
+              href={siteEnv.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary px-10 py-5 text-sm text-center flex items-center justify-center gap-2"
@@ -1571,7 +1572,7 @@ export default function App() {
               >
                 <li>
                   <a
-                    href="https://instagram.com/teamlucasprado"
+                    href={siteEnv.instagramUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 hover:text-[#2979FF] transition-colors"
@@ -1580,19 +1581,19 @@ export default function App() {
                       icon="solar:instagram-linear"
                       width="18"
                     ></iconify-icon>
-                    @teamlucasprado
+                    @{siteEnv.instagramHandle}
                   </a>
                 </li>
                 <li>
                   <a
-                    href="mailto:lucasspradoo01@gmail.com"
+                    href={`mailto:${siteEnv.contactEmail}`}
                     className="flex items-center gap-2 hover:text-[#2979FF] transition-colors"
                   >
                     <iconify-icon
                       icon="solar:letter-linear"
                       width="18"
                     ></iconify-icon>
-                    lucasspradoo01@gmail.com
+                    {siteEnv.contactEmail}
                   </a>
                 </li>
                 <li>
