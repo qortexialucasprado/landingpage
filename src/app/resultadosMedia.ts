@@ -15,6 +15,10 @@ const posterGlob = import.meta.glob(
   { eager: true, query: "?url", import: "default" },
 ) as Record<string, string>;
 
+function isPosterOrThumbnailFile(filename: string): boolean {
+  return /-(thumbnail|poster)\.(webp|jpe?g|png)$/i.test(filename);
+}
+
 function getTitleFromFilename(filename: string): string {
   const base = filename.replace(/\.[^.]+$/, "");
   return base.replace(/\d+$/, "");
@@ -49,8 +53,12 @@ function shuffle<T>(array: T[]): T[] {
 
 const posterByVideoBase = buildPosterMap();
 
-const items: ResultadoItem[] = Object.entries(mediaGlob).map(
-  ([path, src]) => {
+const items: ResultadoItem[] = Object.entries(mediaGlob)
+  .filter(([path]) => {
+    const filename = path.split("/").pop() ?? path;
+    return !isPosterOrThumbnailFile(filename);
+  })
+  .map(([path, src]) => {
     const filename = path.split("/").pop() ?? path;
     const isVideo = /\.(mp4|webm|mov)$/i.test(filename);
 
