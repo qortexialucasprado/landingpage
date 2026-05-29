@@ -29,8 +29,7 @@ function isCardHiddenInViewport(
 }
 
 type CarouselInteractionContextValue = {
-  suppressNextClick: () => void;
-  consumeSuppressedClick: () => boolean;
+  shouldSuppressClick: (cardId: string) => boolean;
 };
 
 const CarouselInteractionContext =
@@ -55,8 +54,10 @@ function useInfiniteCarouselScroll({
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const halfWidthRef = useRef(0);
+  const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
   const didDragRef = useRef(false);
+  const dragStartCardIdRef = useRef<string | null>(null);
   const dragStartXRef = useRef(0);
   const dragStartOffsetRef = useRef(0);
   const pointerIdRef = useRef<number | null>(null);
@@ -139,37 +140,61 @@ function useInfiniteCarouselScroll({
     };
   }, [applyOffset]);
 
-  const endDrag = useCallback(() => {
-    if (!isDraggingRef.current) return;
+  const endPointerSession = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (pointerIdRef.current !== e.pointerId) return false;
 
-    isDraggingRef.current = false;
-    pointerIdRef.current = null;
-    setIsDragging(false);
-  }, []);
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
 
-  const onPointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return;
-    if (prefersReducedMotion.current) return;
+      const hadDrag = didDragRef.current;
+      isPointerDownRef.current = false;
+      pointerIdRef.current = null;
+      dragStartCardIdRef.current = null;
 
-    measureHalfWidth();
-    isDraggingRef.current = true;
-    didDragRef.current = false;
-    dragStartXRef.current = e.clientX;
-    dragStartOffsetRef.current = offsetRef.current;
-    pointerIdRef.current = e.pointerId;
-    setIsDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }, [measureHalfWidth]);
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        setIsDragging(false);
+      }
+
+      return hadDrag;
+    },
+    [],
+  );
+
+  const onPointerDown = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (e.button !== 0) return;
+      if (prefersReducedMotion.current) return;
+
+      measureHalfWidth();
+      isPointerDownRef.current = true;
+      isDraggingRef.current = false;
+      didDragRef.current = false;
+      dragStartXRef.current = e.clientX;
+      dragStartOffsetRef.current = offsetRef.current;
+      pointerIdRef.current = e.pointerId;
+
+      const card = (e.target as HTMLElement).closest("[data-carousel-card]");
+      dragStartCardIdRef.current =
+        card?.getAttribute("data-carousel-card") ?? null;
+    },
+    [measureHalfWidth],
+  );
 
   const onPointerMove = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
-      if (!isDraggingRef.current || pointerIdRef.current !== e.pointerId) {
+      if (!isPointerDownRef.current || pointerIdRef.current !== e.pointerId) {
         return;
       }
 
       const delta = e.clientX - dragStartXRef.current;
       if (!didDragRef.current && Math.abs(delta) >= DRAG_THRESHOLD_PX) {
         didDragRef.current = true;
+        isDraggingRef.current = true;
+        setIsDragging(true);
+        e.currentTarget.setPointerCapture(e.pointerId);
       }
 
       if (didDragRef.current) {
@@ -180,23 +205,15 @@ function useInfiniteCarouselScroll({
   );
 
   const onPointerUp = useCallback(
-    (e: ReactPointerEvent<HTMLDivElement>) => {
-      if (pointerIdRef.current !== e.pointerId) return;
-
-      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      }
-      endDrag();
-    },
-    [endDrag],
+    (e: ReactPointerEvent<HTMLDivElement>) => endPointerSession(e),
+    [endPointerSession],
   );
 
   const onPointerCancel = useCallback(
     (e: ReactPointerEvent<HTMLDivElement>) => {
-      if (pointerIdRef.current !== e.pointerId) return;
-      endDrag();
+      endPointerSession(e);
     },
-    [endDrag],
+    [endPointerSession],
   );
 
   const onMouseEnter = useCallback(() => {
@@ -211,6 +228,7 @@ function useInfiniteCarouselScroll({
     trackRef,
     isDragging,
     didDragRef,
+    dragStartCardIdRef,
     prefersReducedMotion: prefersReducedMotion.current,
     onPointerDown,
     onPointerMove,
@@ -286,7 +304,7 @@ function CarouselVideo({
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
-    if (carouselInteraction?.consumeSuppressedClick()) return;
+    if (carouselInteraction?.shouldSuppressClick(cardId)) return;
 
     if (isActive) {
       onDeactivate(cardId);
@@ -452,7 +470,7 @@ function CarouselVideoFallback({
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
-    if (carouselInteraction?.consumeSuppressedClick()) return;
+    if (carouselInteraction?.shouldSuppressClick(cardId)) return;
 
     if (isActive) {
       onDeactivate(cardId);
@@ -609,7 +627,7 @@ function MediaCard({
 
 export function ResultadosCarousel() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
-  const suppressClickRef = useRef(false);
+  const suppressClickOnCardRef = useRef<string | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCardElementRef = useRef<HTMLElement | null>(null);
 
@@ -645,12 +663,9 @@ export function ResultadosCarousel() {
 
   const interactionValue = useMemo<CarouselInteractionContextValue>(
     () => ({
-      suppressNextClick: () => {
-        suppressClickRef.current = true;
-      },
-      consumeSuppressedClick: () => {
-        if (!suppressClickRef.current) return false;
-        suppressClickRef.current = false;
+      shouldSuppressClick: (cardId: string) => {
+        if (suppressClickOnCardRef.current !== cardId) return false;
+        suppressClickOnCardRef.current = null;
         return true;
       },
     }),
@@ -684,10 +699,10 @@ export function ResultadosCarousel() {
           }
         }}
         onPointerUp={(e) => {
-          const wasDrag = scroll.didDragRef.current;
-          scroll.onPointerUp(e);
-          if (wasDrag) {
-            suppressClickRef.current = true;
+          const dragStartCardId = scroll.dragStartCardIdRef.current;
+          const wasDrag = scroll.onPointerUp(e);
+          if (wasDrag && dragStartCardId) {
+            suppressClickOnCardRef.current = dragStartCardId;
           }
           pauseActiveVideoIfHidden();
         }}

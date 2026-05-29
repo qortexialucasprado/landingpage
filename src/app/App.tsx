@@ -311,7 +311,7 @@ export default function App() {
               className="font-light text-base mb-10 reveal-up delay-400 max-w-lg leading-relaxed"
             >
               Não importa se você quer emagrecer, ganhar massa
-              ou simplesmente se sentir bem. O caminho existe —
+              ou simplesmente se sentir bem. O caminho existe,
               e é mais direto do que te fizeram acreditar.
             </p>
 
@@ -513,7 +513,7 @@ export default function App() {
               >
                 A maioria das pessoas já tentou. Desistiu porque
                 o processo era cansativo, confuso ou sem
-                resultado visível. Aqui é diferente — o método é
+                resultado visível. Aqui é diferente: o método é
                 simples porque foi construído para funcionar de
                 verdade.
               </p>
@@ -686,7 +686,7 @@ export default function App() {
               {
                 num: "01",
                 title: "AVALIAÇÃO",
-                desc: "Entendemos o seu histórico, objetivo e rotina antes de montar qualquer treino. O ponto de partida é individual — sempre.",
+                desc: "Entendemos o seu histórico, objetivo e rotina antes de montar qualquer treino. O ponto de partida é individual, sempre.",
                 img: "https://images.unsplash.com/photo-1594381898411-846e7d193883?q=80&w=800&auto=format&fit=crop",
                 highlight: false,
               },
@@ -1154,7 +1154,7 @@ export default function App() {
                 <img
                   src={lucasPradoPerfil}
                   className="block h-auto w-full"
-                  alt="Lucas Prado - Perfil"
+                  alt="Lucas Prado, perfil"
                   width={589}
                   height={900}
                 />
@@ -1335,11 +1335,11 @@ export default function App() {
                 },
                 {
                   q: "E o atendimento a domicílio?",
-                  a: "Atendo na sua casa, condomínio ou espaço de sua preferência. Sem necessidade de deslocamento — o treino vai até você.",
+                  a: "Atendo na sua casa, condomínio ou espaço de sua preferência. Sem necessidade de deslocamento: o treino vai até você.",
                 },
                 {
                   q: "Em quanto tempo vejo resultado?",
-                  a: "Depende do objetivo e da consistência — mas alunos costumam notar diferença nas primeiras 4 a 8 semanas de protocolo. Resultado real leva tempo, e o processo é esse.",
+                  a: "Depende do objetivo e da consistência, mas alunos costumam notar diferença nas primeiras 4 a 8 semanas de protocolo. Resultado real leva tempo, e o processo é esse.",
                 },
                 {
                   q: "Qual é o valor?",
@@ -1500,7 +1500,7 @@ export default function App() {
                 href="#"
                 onClick={(e) => scrollToSection(e, "#")}
                 className="group relative mb-5 block"
-                aria-label="Lucas Prado Personal Trainer - voltar ao topo"
+                aria-label="Lucas Prado Personal Trainer, voltar ao topo"
               >
                 <div
                   className="pointer-events-none absolute -inset-6 rounded-full opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-80"
