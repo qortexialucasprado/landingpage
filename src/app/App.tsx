@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import logoLp from "../imports/Html→Body/Logo_LP.png";
 import logoLucasPrado from "../imports/Html→Body/Logo_Lucas_Prado.png";
 import lucasPradoPerfil from "../imports/Html→Body/Lucas.Prado.png";
+import { FaqAlienDecoration } from "./components/FaqAlienDecoration";
 import { ResultadosCarousel } from "./components/ResultadosCarousel";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { getWhatsAppUrl, siteEnv } from "../config/env";
@@ -12,6 +13,7 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroImgRef = useRef<HTMLImageElement>(null);
+  const faqSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     // Load Iconify
@@ -1288,10 +1290,12 @@ export default function App() {
 
       {/* FAQ */}
       <section
+        ref={faqSectionRef}
         className="py-24 md:py-32 relative overflow-hidden"
         style={{ backgroundColor: "var(--clr-surface)" }}
         id="faq"
       >
+        <FaqAlienDecoration sectionRef={faqSectionRef} />
         <div
           className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
           aria-hidden
