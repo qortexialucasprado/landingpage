@@ -395,14 +395,14 @@ export default function App() {
 
       {/* STRIP DE PROVA RÁPIDA */}
       <section
-        className="py-8 md:py-8 relative z-20"
+        className="py-4 md:py-5 relative z-20"
         style={{
           background:
             "linear-gradient(135deg, #0B3D91 0%, #1565C0 100%)",
         }}
       >
         <div className="container mx-auto px-5">
-          <div className="flex flex-col sm:flex-row sm:flex-wrap lg:flex-nowrap items-center justify-between gap-8 sm:gap-6 md:gap-10 text-center sm:text-left reveal-scale">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:flex sm:flex-row sm:flex-wrap lg:flex-nowrap sm:items-center sm:justify-between sm:gap-4 md:gap-8 text-center sm:text-left reveal-scale">
             {[
               { value: "+200", label: "Alunos transformados" },
               {
@@ -424,24 +424,24 @@ export default function App() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className={`w-full sm:flex-1 sm:w-auto ${item.alignRight ? "sm:text-left lg:text-right" : ""}`}
+                className={`sm:flex-1 sm:w-auto ${item.alignRight ? "sm:text-left lg:text-right" : ""}`}
               >
                 {item.divider && idx > 0 && (
                   <div
-                    className="hidden sm:block w-[1px] h-12 bg-white/15 absolute"
+                    className="hidden sm:block w-[1px] h-8 bg-white/15 absolute"
                     style={{ left: `${idx * 25}%` }}
                   ></div>
                 )}
                 <div
                   style={{ fontFamily: "var(--font-display)" }}
-                  className="font-extrabold text-4xl md:text-5xl text-white tracking-tight"
+                  className="font-extrabold text-2xl sm:text-3xl md:text-4xl text-white tracking-tight leading-none"
                 >
                   {item.value}
                 </div>
                 {item.label && (
                   <div
                     style={{ fontFamily: "var(--font-mono)" }}
-                    className="text-xs text-white/70 mt-1"
+                    className="text-[0.65rem] sm:text-xs text-white/70 mt-0.5 leading-tight"
                   >
                     {item.label}
                   </div>
@@ -451,7 +451,7 @@ export default function App() {
                     style={{
                       fontFamily: "var(--font-display)",
                     }}
-                    className="font-extrabold text-2xl text-white/70 tracking-tight"
+                    className="font-extrabold text-sm sm:text-lg md:text-xl text-white/70 tracking-tight leading-tight"
                   >
                     {item.sublabel}
                   </div>
