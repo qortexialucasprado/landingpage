@@ -13,6 +13,8 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroImgRef = useRef<HTMLImageElement>(null);
+  const faqSectionRef = useRef<HTMLElement>(null);
+  const faqAlienRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load Iconify
@@ -34,9 +36,28 @@ export default function App() {
       if (scrollY < window.innerHeight && heroImgRef.current) {
         heroImgRef.current.style.transform = `translateY(${scrollY * 0.3}px)`;
       }
+
+      if (faqSectionRef.current && faqAlienRef.current) {
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        if (prefersReducedMotion) {
+          faqAlienRef.current.style.transform = "translate3d(0, 0, 0)";
+          return;
+        }
+
+        const rect = faqSectionRef.current.getBoundingClientRect();
+        const viewportCenter = window.innerHeight * 0.5;
+        const sectionCenter = rect.top + rect.height * 0.5;
+        const offset = (sectionCenter - viewportCenter) * -0.28;
+
+        faqAlienRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () =>
       window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -1289,6 +1310,7 @@ export default function App() {
 
       {/* FAQ */}
       <section
+        ref={faqSectionRef}
         className="py-24 md:py-32 relative overflow-hidden"
         style={{ backgroundColor: "var(--clr-surface)" }}
         id="faq"
@@ -1297,16 +1319,20 @@ export default function App() {
           className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
           aria-hidden
         >
-          <img
-            src={alienIcon}
-            alt=""
-            className="absolute right-0 top-1/2 h-auto w-[280px] -translate-y-1/2 translate-x-1/4 opacity-[0.12] sm:w-[340px] md:w-[406px] md:opacity-[0.15] lg:translate-x-0"
-          />
+          <div className="absolute right-0 top-[68%] -translate-y-1/2 translate-x-1/4 sm:top-[72%] lg:translate-x-0">
+            <div ref={faqAlienRef} className="will-change-transform">
+              <img
+                src={alienIcon}
+                alt=""
+                className="h-auto w-[280px] opacity-[0.12] sm:w-[340px] md:w-[406px] md:opacity-[0.15]"
+              />
+            </div>
+          </div>
           <div
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(circle at 75% 50%, rgba(41, 121, 255, 0.08) 0%, transparent 55%)",
+                "radial-gradient(circle at 75% 72%, rgba(41, 121, 255, 0.08) 0%, transparent 55%)",
             }}
           />
         </div>
