@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import logoLp from "../imports/Html→Body/Logo_LP.png";
 import logoLucasPrado from "../imports/Html→Body/Logo_Lucas_Prado.png";
 import lucasPradoPerfil from "../imports/Html→Body/Lucas.Prado.png";
+import alienIcon from "../imports/Html→Body/AntesDepois/alien-png-icon-406x500.png";
 import { ResultadosCarousel } from "./components/ResultadosCarousel";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { getWhatsAppUrl, siteEnv } from "../config/env";
@@ -1292,6 +1293,24 @@ export default function App() {
         style={{ backgroundColor: "var(--clr-surface)" }}
         id="faq"
       >
+        <div
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          aria-hidden
+        >
+          <img
+            src={alienIcon}
+            alt=""
+            className="absolute right-0 top-1/2 h-auto w-[280px] -translate-y-1/2 translate-x-1/4 opacity-[0.12] sm:w-[340px] md:w-[406px] md:opacity-[0.15] lg:translate-x-0"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 75% 50%, rgba(41, 121, 255, 0.08) 0%, transparent 55%)",
+            }}
+          />
+        </div>
+
         <div className="container mx-auto px-5 md:px-10 lg:px-20 relative z-10">
           <div className="max-w-3xl mx-auto">
             <span
