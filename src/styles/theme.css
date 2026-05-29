@@ -290,14 +290,17 @@
     will-change: transform;
   }
 
-  .resultados-carousel.is-video-playing .animate-resultados-scroll {
-    animation-play-state: paused;
+  .resultados-carousel {
+    cursor: grab;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .resultados-carousel:hover .animate-resultados-scroll {
-      animation-play-state: paused;
-    }
+  .resultados-carousel.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .resultados-carousel.is-video-playing {
+    cursor: default;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -306,7 +309,7 @@
     }
 
     .resultados-carousel {
-      overflow-x: auto;
+      cursor: auto;
     }
   }
 

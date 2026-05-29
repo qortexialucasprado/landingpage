@@ -1,18 +1,210 @@
 import {
+  createContext,
   type MouseEvent,
+  type PointerEvent as ReactPointerEvent,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { resultadosItems } from "../resultadosMedia";
 
+const SCROLL_DURATION_S = 200;
+const DRAG_THRESHOLD_PX = 8;
+
+type CarouselInteractionContextValue = {
+  suppressNextClick: () => void;
+  consumeSuppressedClick: () => boolean;
+};
+
+const CarouselInteractionContext =
+  createContext<CarouselInteractionContextValue | null>(null);
+
+function useCarouselInteraction() {
+  return useContext(CarouselInteractionContext);
+}
+
 function usePrefersHover() {
-  const prefersHover = useRef(
+  return useRef(
     typeof window !== "undefined" &&
       window.matchMedia("(hover: hover) and (pointer: fine)").matches,
   );
-  return prefersHover;
+}
+
+function useInfiniteCarouselScroll({
+  paused,
+}: {
+  paused: boolean;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const halfWidthRef = useRef(0);
+  const isDraggingRef = useRef(false);
+  const didDragRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const pointerIdRef = useRef<number | null>(null);
+  const lastFrameRef = useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const prefersReducedMotion = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  const prefersHover = usePrefersHover();
+  const isHoveringRef = useRef(false);
+  const pausedRef = useRef(paused);
+  const [isDragging, setIsDragging] = useState(false);
+
+  pausedRef.current = paused;
+
+  const normalizeOffset = useCallback((offset: number) => {
+    const half = halfWidthRef.current;
+    if (half <= 0) return offset;
+
+    let next = offset;
+    while (next < -half) next += half;
+    while (next > 0) next -= half;
+    return next;
+  }, []);
+
+  const applyOffset = useCallback(
+    (offset: number) => {
+      const normalized = normalizeOffset(offset);
+      offsetRef.current = normalized;
+      if (trackRef.current) {
+        trackRef.current.style.transform = `translate3d(${normalized}px, 0, 0)`;
+      }
+    },
+    [normalizeOffset],
+  );
+
+  const measureHalfWidth = useCallback(() => {
+    if (!trackRef.current) return;
+    halfWidthRef.current = trackRef.current.scrollWidth / 2;
+  }, []);
+
+  useEffect(() => {
+    measureHalfWidth();
+    const track = trackRef.current;
+    if (!track) return;
+
+    const observer = new ResizeObserver(measureHalfWidth);
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [measureHalfWidth]);
+
+  useEffect(() => {
+    if (prefersReducedMotion.current) return;
+
+    const tick = (time: number) => {
+      const last = lastFrameRef.current ?? time;
+      lastFrameRef.current = time;
+      const dt = (time - last) / 1000;
+
+      const shouldAutoScroll =
+        !isDraggingRef.current &&
+        !pausedRef.current &&
+        !(prefersHover.current && isHoveringRef.current) &&
+        halfWidthRef.current > 0;
+
+      if (shouldAutoScroll) {
+        const speed = halfWidthRef.current / SCROLL_DURATION_S;
+        applyOffset(offsetRef.current - speed * dt);
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [applyOffset]);
+
+  const endDrag = useCallback(() => {
+    if (!isDraggingRef.current) return;
+
+    isDraggingRef.current = false;
+    pointerIdRef.current = null;
+    setIsDragging(false);
+  }, []);
+
+  const onPointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    if (prefersReducedMotion.current) return;
+
+    measureHalfWidth();
+    isDraggingRef.current = true;
+    didDragRef.current = false;
+    dragStartXRef.current = e.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    pointerIdRef.current = e.pointerId;
+    setIsDragging(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, [measureHalfWidth]);
+
+  const onPointerMove = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (!isDraggingRef.current || pointerIdRef.current !== e.pointerId) {
+        return;
+      }
+
+      const delta = e.clientX - dragStartXRef.current;
+      if (!didDragRef.current && Math.abs(delta) >= DRAG_THRESHOLD_PX) {
+        didDragRef.current = true;
+      }
+
+      if (didDragRef.current) {
+        applyOffset(dragStartOffsetRef.current + delta);
+      }
+    },
+    [applyOffset],
+  );
+
+  const onPointerUp = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (pointerIdRef.current !== e.pointerId) return;
+
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      endDrag();
+    },
+    [endDrag],
+  );
+
+  const onPointerCancel = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (pointerIdRef.current !== e.pointerId) return;
+      endDrag();
+    },
+    [endDrag],
+  );
+
+  const onMouseEnter = useCallback(() => {
+    isHoveringRef.current = true;
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    isHoveringRef.current = false;
+  }, []);
+
+  return {
+    trackRef,
+    isDragging,
+    didDragRef,
+    prefersReducedMotion: prefersReducedMotion.current,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel,
+    onMouseEnter,
+    onMouseLeave,
+  };
 }
 
 function CarouselVideo({
@@ -35,6 +227,7 @@ function CarouselVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
   const loadedRef = useRef(false);
   const prefersHover = usePrefersHover();
+  const carouselInteraction = useCarouselInteraction();
 
   const playVideo = useCallback(() => {
     const video = videoRef.current;
@@ -79,6 +272,8 @@ function CarouselVideo({
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
+    if (carouselInteraction?.consumeSuppressedClick()) return;
+
     if (isActive) {
       onDeactivate(cardId);
     } else {
@@ -115,6 +310,7 @@ function CarouselVideo({
           className={`h-full w-full object-cover transition-opacity duration-200 ${isActive ? "opacity-0" : "opacity-100"}`}
           loading="lazy"
           decoding="async"
+          draggable={false}
         />
         {!isActive && (
           <div
@@ -173,6 +369,7 @@ function CarouselVideoFallback({
   const loadedRef = useRef(false);
   const [posterReady, setPosterReady] = useState(false);
   const prefersHover = usePrefersHover();
+  const carouselInteraction = useCarouselInteraction();
 
   const loadPosterFrame = useCallback(() => {
     const video = videoRef.current;
@@ -241,6 +438,8 @@ function CarouselVideoFallback({
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
+    if (carouselInteraction?.consumeSuppressedClick()) return;
+
     if (isActive) {
       onDeactivate(cardId);
     } else {
@@ -339,6 +538,7 @@ function MediaCard({
           className="h-full w-full object-cover"
           loading="lazy"
           decoding="async"
+          draggable={false}
         />
       )}
       <div
@@ -356,6 +556,7 @@ function MediaCard({
 
 export function ResultadosCarousel() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const suppressClickRef = useRef(false);
 
   const handleActivate = useCallback((cardId: string) => {
     setActiveCardId(cardId);
@@ -365,30 +566,75 @@ export function ResultadosCarousel() {
     setActiveCardId((prev) => (prev === cardId ? null : prev));
   }, []);
 
+  const scroll = useInfiniteCarouselScroll({
+    paused: Boolean(activeCardId),
+  });
+
+  const interactionValue = useMemo<CarouselInteractionContextValue>(
+    () => ({
+      suppressNextClick: () => {
+        suppressClickRef.current = true;
+      },
+      consumeSuppressedClick: () => {
+        if (!suppressClickRef.current) return false;
+        suppressClickRef.current = false;
+        return true;
+      },
+    }),
+    [],
+  );
+
   if (resultadosItems.length === 0) return null;
 
   const loopItems = [...resultadosItems, ...resultadosItems];
 
+  const carouselClassName = [
+    "resultados-carousel mb-20 min-h-64 w-full -mx-5 md:-mx-10 lg:-mx-20",
+    activeCardId ? "is-video-playing" : "",
+    scroll.isDragging ? "is-dragging" : "",
+    scroll.prefersReducedMotion ? "overflow-x-auto" : "overflow-hidden",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      className={`resultados-carousel mb-20 min-h-64 w-full overflow-hidden -mx-5 md:-mx-10 lg:-mx-20${activeCardId ? " is-video-playing" : ""}`}
-      aria-label="Carrossel de resultados antes e depois"
-    >
-      <div className="flex w-max animate-resultados-scroll">
-        {loopItems.map((item, idx) => {
-          const cardId = `${item.src}::${idx}`;
-          return (
-            <MediaCard
-              key={cardId}
-              item={item}
-              cardId={cardId}
-              activeCardId={activeCardId}
-              onActivate={handleActivate}
-              onDeactivate={handleDeactivate}
-            />
-          );
-        })}
+    <CarouselInteractionContext.Provider value={interactionValue}>
+      <div
+        className={carouselClassName}
+        aria-label="Carrossel de resultados antes e depois"
+        onPointerDown={scroll.onPointerDown}
+        onPointerMove={scroll.onPointerMove}
+        onPointerUp={(e) => {
+          const wasDrag = scroll.didDragRef.current;
+          scroll.onPointerUp(e);
+          if (wasDrag) {
+            suppressClickRef.current = true;
+          }
+        }}
+        onPointerCancel={scroll.onPointerCancel}
+        onMouseEnter={scroll.onMouseEnter}
+        onMouseLeave={scroll.onMouseLeave}
+        style={{ touchAction: scroll.prefersReducedMotion ? "pan-x" : "none" }}
+      >
+        <div
+          ref={scroll.trackRef}
+          className={`flex w-max ${scroll.prefersReducedMotion ? "" : "will-change-transform"}`}
+        >
+          {loopItems.map((item, idx) => {
+            const cardId = `${item.src}::${idx}`;
+            return (
+              <MediaCard
+                key={cardId}
+                item={item}
+                cardId={cardId}
+                activeCardId={activeCardId}
+                onActivate={handleActivate}
+                onDeactivate={handleDeactivate}
+              />
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </CarouselInteractionContext.Provider>
   );
 }

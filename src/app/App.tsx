@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import logoLp from "../imports/Html→Body/Logo_LP.png";
 import logoLucasPrado from "../imports/Html→Body/Logo_Lucas_Prado.png";
 import lucasPradoPerfil from "../imports/Html→Body/Lucas.Prado.png";
-import alienIcon from "../imports/Html→Body/AntesDepois/alien-png-icon-406x500.png";
 import { ResultadosCarousel } from "./components/ResultadosCarousel";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { getWhatsAppUrl, siteEnv } from "../config/env";
@@ -13,8 +12,6 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroImgRef = useRef<HTMLImageElement>(null);
-  const faqSectionRef = useRef<HTMLElement>(null);
-  const faqAlienRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load Iconify
@@ -35,24 +32,6 @@ export default function App() {
       const scrollY = window.scrollY;
       if (scrollY < window.innerHeight && heroImgRef.current) {
         heroImgRef.current.style.transform = `translateY(${scrollY * 0.3}px)`;
-      }
-
-      if (faqSectionRef.current && faqAlienRef.current) {
-        const prefersReducedMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)",
-        ).matches;
-
-        if (prefersReducedMotion) {
-          faqAlienRef.current.style.transform = "translate3d(0, 0, 0)";
-          return;
-        }
-
-        const rect = faqSectionRef.current.getBoundingClientRect();
-        const viewportCenter = window.innerHeight * 0.5;
-        const sectionCenter = rect.top + rect.height * 0.5;
-        const offset = (sectionCenter - viewportCenter) * -0.28;
-
-        faqAlienRef.current.style.transform = `translate3d(0, ${offset}px, 0)`;
       }
     };
 
@@ -1309,7 +1288,6 @@ export default function App() {
 
       {/* FAQ */}
       <section
-        ref={faqSectionRef}
         className="py-24 md:py-32 relative overflow-hidden"
         style={{ backgroundColor: "var(--clr-surface)" }}
         id="faq"
@@ -1318,15 +1296,6 @@ export default function App() {
           className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
           aria-hidden
         >
-          <div className="absolute right-0 top-[68%] -translate-y-1/2 translate-x-1/4 sm:top-[72%] lg:translate-x-0">
-            <div ref={faqAlienRef} className="will-change-transform">
-              <img
-                src={alienIcon}
-                alt=""
-                className="h-auto w-[280px] opacity-[0.12] sm:w-[340px] md:w-[406px] md:opacity-[0.15]"
-              />
-            </div>
-          </div>
           <div
             className="absolute inset-0"
             style={{
