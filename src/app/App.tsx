@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import logoLp from "../imports/Html→Body/Logo_LP.png";
 import logoLucasPrado from "../imports/Html→Body/Logo_Lucas_Prado.png";
-import lucasPradoPerfil from "../imports/Html→Body/Lucas.Prado.png";
+import lucasPradoPerfil from "../imports/Html→Body/Lucas_Prado.jpeg";
+import simoneBastosAvatar from "../assets/testimonials/simone-bastos.jpg";
+import luizVinhozaAvatar from "../assets/testimonials/luiz-vinhoza.jpeg";
+import viniciusMoraesAvatar from "../assets/testimonials/vinicius-moraes.jpeg";
 import { FaqAlienDecoration } from "./components/FaqAlienDecoration";
 import { ResultadosCarousel } from "./components/ResultadosCarousel";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
@@ -797,29 +800,26 @@ export default function App() {
             {[
               {
                 quote:
-                  "Nunca achei que fosse ser tão direto assim. Sem enrolação, sem aquela sensação de que você é só mais um aluno. Em 3 meses perdi 9kg e não passei um dia com fome.",
-                name: "ANA C.",
+                  "Com uma rotina intensa entre empresa, doutorado e família, eu precisava de um profissional que entendesse que saúde não é apenas sobre treinar, mas sobre construir constância. O Lucas Prado tem sido fundamental nesse processo.\n\nMais do que montar treinos, ele acompanha, orienta e incentiva. Graças ao seu trabalho, tenho me sentido mais forte, disposta e confiante para enfrentar os desafios do dia a dia.\n\nSua dedicação, profissionalismo e atenção individual fazem toda a diferença. Recomendo o Lucas para quem busca resultados reais, com segurança, qualidade e um acompanhamento verdadeiramente personalizado.",
+                name: "SIMONE BASTOS",
                 type: "EMAGRECIMENTO · PRESENCIAL",
-                avatar:
-                  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&h=200&auto=format&fit=crop&crop=faces",
+                avatar: simoneBastosAvatar,
                 highlight: false,
               },
               {
                 quote:
-                  "Fazia academia há 2 anos sem resultado. Com o Lucas, em 4 meses comecei a ver diferença real na musculatura. O treino é sério, mas você consegue seguir.",
-                name: "MARCOS R.",
-                type: "HIPERTROFIA · ONLINE",
-                avatar:
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&auto=format&fit=crop&crop=faces",
+                  "Com o objetivo de obter mais desempenho, flexibilidade, velocidade, saúde e qualidade de vida busquei fazer musculação com ajuda de um profissional, o Lucas me ajudou com esses objetivos e continua me ajudando, com o tempo evolui muito fisicamente e mentalmente, ajudando a aumentar minha disciplina e melhor desempenho durante meu trabalho, obrigado por tudo e seguimos juntos nessa jornada",
+                name: "LUIZ VINHOZA",
+                type: "HIPERTROFIA - PRESENCIAL",
+                avatar: luizVinhozaAvatar,
                 highlight: true,
               },
               {
                 quote:
-                  "Tenho 62 anos e achei que treino pesado não era para mim. Ele adaptou tudo. Hoje faço exercícios que não conseguia nem imaginar há 6 meses.",
-                name: "MARIA L.",
-                type: "TERCEIRA IDADE · A DOMICÍLIO",
-                avatar:
-                  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&h=200&auto=format&fit=crop&crop=faces",
+                  "Com uma rotina intensa entre empresa, reuniões e família, eu precisava de um profissional que entendesse minha realidade e me ajudasse a manter o ritmo nos treinos.\n\nO Lucas Prado tem sido fundamental nesse processo. Mais do que montar treinos, ele acompanha, orienta e incentiva. Graças ao seu trabalho, tenho me sentido mais forte, disposto e confiante para enfrentar os desafios do dia a dia.\n\nSua dedicação, profissionalismo e atenção individual fazem toda a diferença. Recomendo o Lucas para quem busca resultados reais, com segurança, qualidade e acompanhamento verdadeiramente personalizado.",
+                name: "VINÍCIUS MORAES",
+                type: "HIPERTROFIA - PRESENCIAL",
+                avatar: viniciusMoraesAvatar,
                 highlight: false,
               },
             ].map((testimonial, idx) => (
@@ -853,7 +853,7 @@ export default function App() {
                     fontFamily: "var(--font-body)",
                     color: "var(--clr-text-mid)",
                   }}
-                  className="text-base md:text-base mb-8 italic flex-1"
+                  className="text-base md:text-base mb-8 italic flex-1 whitespace-pre-line"
                 >
                   "{testimonial.quote}"
                 </p>
