@@ -12,8 +12,8 @@
 
   --clr-text-hi: #FFFFFF;
   --clr-text-mid: #F2F2F2;
-  --clr-text-lo: #B0B0B0;
-  --clr-text-disabled: #6B6B6B;
+  --clr-text-lo: #C5C5C5;
+  --clr-text-disabled: #949494;
 
   --clr-border-subtle: rgba(41, 121, 255, 0.15);
   --clr-border-active: #2979FF;
@@ -312,13 +312,83 @@
     cursor: default;
   }
 
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--clr-primary);
+    color: white;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  .text-caption {
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  @media (min-width: 768px) {
+    .text-caption {
+      font-size: 0.8125rem;
+    }
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--clr-primary);
+    outline-offset: 2px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    .animate-float,
+    .animate-ticker {
+      animation: none;
+    }
+
     .animate-resultados-scroll {
       animation: none;
     }
 
     .resultados-carousel {
       cursor: auto;
+    }
+
+    .reveal-up,
+    .reveal-right,
+    .reveal-scale {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: none;
     }
   }
 

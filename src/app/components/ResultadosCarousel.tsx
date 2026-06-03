@@ -1,5 +1,6 @@
 import {
   createContext,
+  type KeyboardEvent,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
   type RefObject,
@@ -224,12 +225,20 @@ function useInfiniteCarouselScroll({
     isHoveringRef.current = false;
   }, []);
 
+  const nudgeOffset = useCallback(
+    (delta: number) => {
+      applyOffset(offsetRef.current + delta);
+    },
+    [applyOffset],
+  );
+
   return {
     trackRef,
     isDragging,
     didDragRef,
     dragStartCardIdRef,
     prefersReducedMotion: prefersReducedMotion.current,
+    nudgeOffset,
     onPointerDown,
     onPointerMove,
     onPointerUp,
@@ -353,7 +362,7 @@ function CarouselVideo({
             }}
             aria-hidden
           >
-            <iconify-icon icon="solar:play-circle-linear" width="40" />
+            <iconify-icon icon="solar:play-circle-linear" width="40" aria-hidden="true" />
           </div>
         )}
         <video
@@ -627,6 +636,7 @@ function MediaCard({
 
 export function ResultadosCarousel() {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [userPaused, setUserPaused] = useState(false);
   const suppressClickOnCardRef = useRef<string | null>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCardElementRef = useRef<HTMLElement | null>(null);
@@ -658,7 +668,7 @@ export function ResultadosCarousel() {
   }, [activeCardId, handleDeactivate]);
 
   const scroll = useInfiniteCarouselScroll({
-    paused: Boolean(activeCardId),
+    paused: Boolean(activeCardId) || userPaused,
   });
 
   const interactionValue = useMemo<CarouselInteractionContextValue>(
@@ -685,12 +695,48 @@ export function ResultadosCarousel() {
     .filter(Boolean)
     .join(" ");
 
+  const handleCarouselKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      scroll.nudgeOffset(120);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      scroll.nudgeOffset(-120);
+    }
+  };
+
   return (
     <CarouselInteractionContext.Provider value={interactionValue}>
+      <div className="mb-4 flex justify-end px-5 md:px-10 lg:px-20">
+        {!scroll.prefersReducedMotion && (
+          <button
+            type="button"
+            className="text-caption rounded border px-3 py-2 transition-colors hover:text-white"
+            style={{
+              fontFamily: "var(--font-mono)",
+              color: "var(--clr-text-lo)",
+              borderColor: "rgba(41, 121, 255, 0.3)",
+            }}
+            onClick={() => setUserPaused((prev) => !prev)}
+            aria-pressed={userPaused}
+            aria-label={
+              userPaused
+                ? "Retomar carrossel de resultados"
+                : "Pausar carrossel de resultados"
+            }
+          >
+            {userPaused ? "Retomar carrossel" : "Pausar carrossel"}
+          </button>
+        )}
+      </div>
       <div
         ref={viewportRef}
         className={carouselClassName}
+        role="region"
         aria-label="Carrossel de resultados antes e depois"
+        aria-describedby="resultados-carousel-hint"
+        tabIndex={0}
+        onKeyDown={handleCarouselKeyDown}
         onPointerDown={scroll.onPointerDown}
         onPointerMove={(e) => {
           scroll.onPointerMove(e);
@@ -711,6 +757,10 @@ export function ResultadosCarousel() {
         onMouseLeave={scroll.onMouseLeave}
         style={{ touchAction: scroll.prefersReducedMotion ? "pan-x" : "none" }}
       >
+        <p id="resultados-carousel-hint" className="sr-only">
+          Use as setas esquerda e direita para navegar. Arraste para
+          explorar os resultados.
+        </p>
         <div
           ref={scroll.trackRef}
           className={`flex w-max ${scroll.prefersReducedMotion ? "" : "will-change-transform"}`}

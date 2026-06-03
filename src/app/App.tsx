@@ -12,11 +12,23 @@ import { getWhatsAppUrl, siteEnv } from "../config/env";
 
 const WHATSAPP_URL = getWhatsAppUrl();
 
+const NAV_LINKS = [
+  { href: "#metodo", label: "Método" },
+  { href: "#resultados", label: "Resultados" },
+  { href: "#modalidades", label: "Modalidades" },
+  { href: "#sobre", label: "Sobre" },
+  { href: "#faq", label: "Dúvidas" },
+] as const;
+
 export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroImgRef = useRef<HTMLImageElement>(null);
   const faqSectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
 
   useEffect(() => {
     // Load Iconify
@@ -35,8 +47,14 @@ export default function App() {
       setIsScrolled(window.scrollY > 50);
 
       const scrollY = window.scrollY;
-      if (scrollY < window.innerHeight && heroImgRef.current) {
+      if (
+        !prefersReducedMotionRef.current &&
+        scrollY < window.innerHeight &&
+        heroImgRef.current
+      ) {
         heroImgRef.current.style.transform = `translateY(${scrollY * 0.3}px)`;
+      } else if (heroImgRef.current) {
+        heroImgRef.current.style.transform = "";
       }
     };
 
@@ -69,6 +87,17 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen]);
+
   const scrollToSection = (
     e: React.MouseEvent<HTMLAnchorElement>,
     targetId: string,
@@ -97,6 +126,10 @@ export default function App() {
 
   return (
     <>
+      <a href="#conteudo" className="skip-link">
+        Pular para o conteúdo
+      </a>
+
       {/* HEADER */}
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
@@ -115,8 +148,9 @@ export default function App() {
             >
               <img
                 src={logoLp}
-                alt="LP Logo"
+                alt=""
                 className="h-8 w-auto object-contain shrink-0"
+                aria-hidden
               />
               LUCAS PRADO
             </a>
@@ -124,17 +158,13 @@ export default function App() {
 
           <nav
             className="hidden lg:flex items-center gap-8 text-xs"
+            aria-label="Menu principal"
             style={{
               fontFamily: "var(--font-mono)",
               color: "var(--clr-text-lo)",
             }}
           >
-            {[
-              { href: "#metodo", label: "Método" },
-              { href: "#resultados", label: "Resultados" },
-              { href: "#modalidades", label: "Modalidades" },
-              { href: "#sobre", label: "Sobre" },
-            ].map((item) => (
+            {NAV_LINKS.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
@@ -158,7 +188,7 @@ export default function App() {
             rel="noopener noreferrer"
             className="hidden md:flex btn-primary px-6 py-3 text-xs items-center gap-2"
           >
-            <iconify-icon
+            <iconify-icon aria-hidden="true"
               icon="solar:phone-calling-linear"
               width="16"
             ></iconify-icon>
@@ -166,32 +196,38 @@ export default function App() {
           </a>
 
           <button
-            className="lg:hidden p-2"
+            type="button"
+            className="lg:hidden flex min-h-11 min-w-11 items-center justify-center p-2"
             style={{ color: "var(--clr-text-mid)" }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="menu-mobile"
+            aria-label={
+              mobileMenuOpen ? "Fechar menu" : "Abrir menu de navegação"
+            }
           >
             <iconify-icon
               icon="solar:hamburger-menu-linear"
               width="24"
+              aria-hidden="true"
             ></iconify-icon>
           </button>
         </div>
 
         {mobileMenuOpen && (
           <div
+            id="menu-mobile"
             className="lg:hidden border-t"
             style={{
               borderColor: "rgba(41, 121, 255, 0.1)",
               backgroundColor: "var(--clr-surface)",
             }}
           >
-            <nav className="flex flex-col p-5 gap-4">
-              {[
-                { href: "#metodo", label: "Método" },
-                { href: "#resultados", label: "Resultados" },
-                { href: "#modalidades", label: "Modalidades" },
-                { href: "#sobre", label: "Sobre" },
-              ].map((item) => (
+            <nav
+              className="flex flex-col p-5 gap-4"
+              aria-label="Menu principal"
+            >
+              {NAV_LINKS.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
@@ -217,7 +253,7 @@ export default function App() {
           }}
         >
           <div
-            className="container mx-auto px-5 text-center text-xs md:text-[0.65rem]"
+            className="container mx-auto px-5 text-center text-caption"
             style={{
               fontFamily: "var(--font-mono)",
               color: "var(--clr-text-lo)",
@@ -229,6 +265,7 @@ export default function App() {
         </div>
       </header>
 
+      <main id="conteudo">
       {/* HERO SECTION */}
       <section
         className="relative min-h-screen flex items-center pt-24 pb-56 sm:pb-80 lg:pb-48 overflow-hidden"
@@ -258,16 +295,19 @@ export default function App() {
           ></div>
         </div>
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 w-full text-center pointer-events-none">
-          <h1
+        <div
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 w-full text-center pointer-events-none"
+        >
+          <p
             style={{
               fontFamily: "var(--font-display)",
               color: "var(--clr-primary)",
             }}
-            className="font-bold text-9xl md:text-[12rem] lg:text-[16rem] opacity-5 tracking-tighter leading-none whitespace-nowrap"
+            className="m-0 font-bold text-9xl md:text-[12rem] lg:text-[16rem] opacity-5 tracking-tighter leading-none whitespace-nowrap"
           >
             LUCAS PRADO
-          </h1>
+          </p>
         </div>
 
         <div
@@ -327,7 +367,7 @@ export default function App() {
                 rel="noopener noreferrer"
                 className="btn-primary px-8 py-4 text-sm md:text-xs text-center flex items-center justify-center gap-2"
               >
-                <iconify-icon
+                <iconify-icon aria-hidden="true"
                   icon="solar:instagram-linear"
                   width="18"
                 ></iconify-icon>
@@ -376,7 +416,7 @@ export default function App() {
                       fontFamily: "var(--font-mono)",
                       color: "var(--clr-text-lo)",
                     }}
-                    className="text-xs md:text-[0.65rem] mb-1"
+                    className="text-caption mb-1"
                   >
                     {stat.label}
                   </div>
@@ -446,7 +486,7 @@ export default function App() {
                 {item.label && (
                   <div
                     style={{ fontFamily: "var(--font-mono)" }}
-                    className="text-xs md:text-[0.65rem] text-white/70 mt-0.5 leading-tight"
+                    className="text-caption text-white/70 mt-0.5 leading-tight"
                   >
                     {item.label}
                   </div>
@@ -545,7 +585,7 @@ export default function App() {
                     key={idx}
                     className="flex items-start gap-4"
                   >
-                    <iconify-icon
+                    <iconify-icon aria-hidden="true"
                       icon="solar:check-circle-linear"
                       style={{ color: "var(--clr-primary)" }}
                       className="mt-1 shrink-0"
@@ -596,7 +636,7 @@ export default function App() {
                   key={idx}
                   className={`glass-card p-6 reveal-up delay-${100 * (idx + 1)}`}
                 >
-                  <iconify-icon
+                  <iconify-icon aria-hidden="true"
                     icon={item.icon}
                     style={{ color: "var(--clr-primary)" }}
                     className="mb-4"
@@ -839,24 +879,27 @@ export default function App() {
                 <div
                   className="flex gap-1 mb-4"
                   style={{ color: "var(--clr-primary)" }}
+                  role="img"
+                  aria-label="Avaliação: 5 de 5 estrelas"
                 >
                   {[...Array(5)].map((_, i) => (
                     <iconify-icon
                       key={i}
                       icon="solar:star-bold"
                       width="16"
+                      aria-hidden="true"
                     ></iconify-icon>
                   ))}
                 </div>
-                <p
+                <blockquote
                   style={{
                     fontFamily: "var(--font-body)",
                     color: "var(--clr-text-mid)",
                   }}
-                  className="text-base md:text-base mb-8 italic flex-1 whitespace-pre-line"
+                  className="m-0 text-base md:text-base mb-8 italic flex-1 whitespace-pre-line border-0 p-0"
                 >
-                  "{testimonial.quote}"
-                </p>
+                  {testimonial.quote}
+                </blockquote>
                 <div
                   className={`flex items-center gap-4 border-t pt-4 mt-auto ${testimonial.highlight ? "border-[#2979FF]/20" : "border-white/10"}`}
                 >
@@ -875,21 +918,21 @@ export default function App() {
                     />
                   </div>
                   <div>
-                    <h4
+                    <p
                       style={{
                         fontFamily: "var(--font-display)",
                         color: "white",
                       }}
-                      className="font-semibold text-lg tracking-tight"
+                      className="m-0 font-semibold text-lg tracking-tight"
                     >
                       {testimonial.name}
-                    </h4>
+                    </p>
                     <p
                       style={{
                         fontFamily: "var(--font-mono)",
                         color: "var(--clr-text-lo)",
                       }}
-                      className="text-xs md:text-[0.6rem]"
+                      className="text-caption"
                     >
                       {testimonial.type}
                     </p>
@@ -1008,7 +1051,7 @@ export default function App() {
               >
                 {mode.highlight && (
                   <div
-                    className="absolute top-4 right-4 z-30 px-3 py-1 rounded text-xs md:text-[0.6rem] text-white tracking-wider"
+                    className="absolute top-4 right-4 z-30 px-3 py-1 rounded text-caption text-white tracking-wider"
                     style={{
                       backgroundColor: "var(--clr-primary)",
                       fontFamily: "var(--font-mono)",
@@ -1048,7 +1091,7 @@ export default function App() {
                         fontFamily: "var(--font-mono)",
                         color: "var(--clr-text-lo)",
                       }}
-                      className="text-xs md:text-[0.65rem]"
+                      className="text-caption"
                     >
                       {mode.subtitle}
                     </p>
@@ -1072,7 +1115,7 @@ export default function App() {
                           color: "var(--clr-text-mid)",
                         }}
                       >
-                        <iconify-icon
+                        <iconify-icon aria-hidden="true"
                           icon={
                             mode.highlight
                               ? "solar:check-circle-bold"
@@ -1120,7 +1163,7 @@ export default function App() {
               fontFamily: "var(--font-mono)",
               color: "var(--clr-text-disabled)",
             }}
-            className="text-center text-xs md:text-[0.65rem] mt-12 reveal-up delay-400"
+            className="text-center text-caption mt-12 reveal-up delay-400"
           >
             VALORES E DISPONIBILIDADE VIA WHATSAPP · SEM
             COMPROMISSO NA PRIMEIRA CONVERSA
@@ -1239,7 +1282,7 @@ export default function App() {
                     key={idx}
                     className="flex items-start gap-3"
                   >
-                    <iconify-icon
+                    <iconify-icon aria-hidden="true"
                       icon={item.icon}
                       style={{ color: "var(--clr-primary)" }}
                       className="mt-1"
@@ -1251,7 +1294,7 @@ export default function App() {
                           fontFamily: "var(--font-mono)",
                           color: "var(--clr-text-disabled)",
                         }}
-                        className="text-xs md:text-[0.65rem] mb-1"
+                        className="text-caption mb-1"
                       >
                         {item.label}
                       </h4>
@@ -1363,8 +1406,9 @@ export default function App() {
                     <iconify-icon
                       icon="solar:alt-arrow-down-linear"
                       style={{ color: "var(--clr-primary)" }}
-                      className="transition-transform duration-300 group-open:rotate-180"
+                      className="transition-transform duration-300 group-open:rotate-180 shrink-0"
                       width="24"
+                      aria-hidden="true"
                     ></iconify-icon>
                   </summary>
                   <div
@@ -1408,6 +1452,7 @@ export default function App() {
         ></div>
 
         <div
+          aria-hidden="true"
           className="absolute top-20 left-0 w-full overflow-hidden whitespace-nowrap z-10 opacity-70 pointer-events-none select-none border-y py-2"
           style={{ borderColor: "rgba(41, 121, 255, 0.1)" }}
         >
@@ -1466,7 +1511,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="btn-primary px-10 py-5 text-base md:text-sm text-center flex items-center justify-center gap-2"
             >
-              <iconify-icon
+              <iconify-icon aria-hidden="true"
                 icon="solar:instagram-linear"
                 width="20"
               ></iconify-icon>
@@ -1478,7 +1523,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="btn-secondary px-10 py-5 text-base md:text-sm text-center flex items-center justify-center gap-2"
             >
-              <iconify-icon
+              <iconify-icon aria-hidden="true"
                 icon="solar:phone-calling-linear"
                 width="20"
               ></iconify-icon>
@@ -1487,6 +1532,7 @@ export default function App() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* FOOTER */}
       <footer
@@ -1549,15 +1595,7 @@ export default function App() {
                   color: "var(--clr-text-lo)",
                 }}
               >
-                {[
-                  { href: "#metodo", label: "Método" },
-                  { href: "#resultados", label: "Resultados" },
-                  {
-                    href: "#modalidades",
-                    label: "Modalidades",
-                  },
-                  { href: "#sobre", label: "Sobre" },
-                ].map((item) => (
+                {NAV_LINKS.map((item) => (
                   <li key={item.href}>
                     <a
                       href={item.href}
@@ -1597,7 +1635,7 @@ export default function App() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 hover:text-[#2979FF] transition-colors"
                   >
-                    <iconify-icon
+                    <iconify-icon aria-hidden="true"
                       icon="solar:instagram-linear"
                       width="18"
                     ></iconify-icon>
@@ -1609,7 +1647,7 @@ export default function App() {
                     href={`mailto:${siteEnv.contactEmail}`}
                     className="flex items-center gap-2 hover:text-[#2979FF] transition-colors"
                   >
-                    <iconify-icon
+                    <iconify-icon aria-hidden="true"
                       icon="solar:letter-linear"
                       width="18"
                     ></iconify-icon>
@@ -1623,7 +1661,7 @@ export default function App() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 hover:text-[#2979FF] transition-colors"
                   >
-                    <iconify-icon
+                    <iconify-icon aria-hidden="true"
                       icon="solar:phone-calling-linear"
                       width="18"
                     ></iconify-icon>
@@ -1640,7 +1678,7 @@ export default function App() {
                 fontFamily: "var(--font-mono)",
                 color: "var(--clr-text-disabled)",
               }}
-              className="text-xs md:text-[0.65rem]"
+              className="text-caption"
             >
               LUCAS PRADO PERSONAL TRAINER · © 2026
             </p>
@@ -1663,7 +1701,11 @@ export default function App() {
         aria-label="Falar no WhatsApp"
         className="fixed bottom-6 right-6 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/40 transition-transform duration-200 hover:scale-110 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
       >
-        <iconify-icon icon="mdi:whatsapp" width="28"></iconify-icon>
+        <iconify-icon
+          icon="mdi:whatsapp"
+          width="28"
+          aria-hidden="true"
+        ></iconify-icon>
       </a>
     </>
   );
