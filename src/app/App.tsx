@@ -856,7 +856,7 @@ export default function App() {
               },
               {
                 quote:
-                  "Com uma rotina intensa entre empresa, reuniões e família, eu precisava de um profissional que entendesse minha realidade e me ajudasse a manter o ritmo nos treinos.\n\nO Lucas Prado tem sido fundamental nesse processo. Mais do que montar treinos, ele acompanha, orienta e incentiva. Graças ao seu trabalho, tenho me sentido mais forte, disposto e confiante para enfrentar os desafios do dia a dia.\n\nSua dedicação, profissionalismo e atenção individual fazem toda a diferença. Recomendo o Lucas para quem busca resultados reais, com segurança, qualidade e acompanhamento verdadeiramente personalizado.",
+                  "Sempre vivi no corre entre a empresa, as reuniões e a vida pessoal, e treinar acabava ficando de lado. Procurei o Lucas Prado justamente porque precisava de alguém que respeitasse essa correria e me ajudasse a evoluir mesmo assim.\n\nEle não só monta os treinos, como está sempre por perto, ajustando, cobrando e puxando quando preciso. O resultado eu sinto no corpo e na cabeça: mais força, mais energia e muito mais segurança no dia a dia.\n\nO cuidado individual dele é o que torna tudo diferente. Para quem quer resultado de verdade, com método e atenção real, indico o Lucas sem pensar duas vezes.",
                 name: "VINÍCIUS MORAES",
                 type: "HIPERTROFIA - PRESENCIAL",
                 avatar: viniciusMoraesAvatar,
@@ -1208,24 +1208,50 @@ export default function App() {
             </div>
 
             <div className="max-w-xl">
-              <span
-                className="eyebrow block mb-6 reveal-right"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
-                Quem é Lucas Prado
-              </span>
-              <h2
-                style={{
-                  fontFamily: "var(--font-display)",
-                  color: "white",
-                }}
-                className="font-bold text-5xl md:text-7xl tracking-tight leading-[0.95] mb-8 reveal-up"
-              >
-                PERSONAL TRAINER
-                <br />
-                QUE ENTREGA
-                <br />O QUE PROMETE.
-              </h2>
+              <header className="mb-10 reveal-up">
+                <h2
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    color: "white",
+                  }}
+                  className="m-0 font-bold text-4xl md:text-5xl tracking-tight leading-none mb-1"
+                >
+                  LUCAS PRADO
+                </h2>
+                <p
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    color: "white",
+                  }}
+                  className="m-0 text-base md:text-lg mb-1"
+                >
+                  Personal Trainer
+                </p>
+                <div
+                  className="mb-1 flex flex-wrap items-center justify-between gap-x-8 gap-y-2"
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    color: "var(--clr-primary)",
+                  }}
+                >
+                  <span className="text-[13px] font-normal md:text-[15px]">
+                    Bacharel em Educação Física
+                  </span>
+                  <span className="text-[13px] font-normal md:text-[15px]">
+                    CREFI 077075-G/RJ
+                  </span>
+                </div>
+                <p
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    color: "var(--clr-text-lo)",
+                  }}
+                  className="m-0 text-[13px] font-normal md:text-[15px]"
+                >
+                  Alta performance · Avaliação física · Especialização em
+                  fisiologia do exercício
+                </p>
+              </header>
 
               <div
                 className="space-y-6 mb-12 reveal-up delay-100"
