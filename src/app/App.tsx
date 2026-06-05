@@ -1289,6 +1289,10 @@ export default function App() {
                   conquistarem resultados reais através de um treinamento
                   planejado, eficiente e adaptado à realidade de cada aluno.
                 </p>
+                <p className="m-0 text-base leading-relaxed">
+                  Sua trajetória é marcada pela dedicação, disciplina e
+                  busca constante por aperfeiçoamento profissional.
+                </p>
               </div>
             </header>
           </div>
@@ -1303,7 +1307,7 @@ export default function App() {
               style={{ color: "var(--clr-text-lo)" }}
             >
               {[
-                "Sua trajetória é marcada pela dedicação, disciplina e busca constante por aperfeiçoamento profissional. Com uma atuação pautada na ciência do exercício, no acompanhamento próximo e no compromisso com a excelência, Lucas construiu sua reputação entregando um serviço sério, humanizado e focado em resultados duradouros.",
+                "Com uma atuação pautada na ciência do exercício, no acompanhamento próximo e no compromisso com a excelência, Lucas construiu sua reputação entregando um serviço sério, humanizado e focado em resultados duradouros.",
                 "O que realmente diferencia seu trabalho é o envolvimento com a evolução de cada pessoa atendida. Mais do que montar treinos, ele acompanha, orienta, corrige, incentiva e permanece presente durante toda a jornada, garantindo que cada etapa seja executada com segurança e eficiência.",
                 "A determinação em entregar o melhor resultado possível para seus alunos é um dos pilares da sua atuação profissional. Cada planejamento é desenvolvido de forma estratégica, respeitando as necessidades, limitações e metas individuais, sempre com foco na evolução contínua e na construção de hábitos sustentáveis.",
                 "Especialista em emagrecimento, hipertrofia, condicionamento físico, treinamento para o público feminino e terceira idade, Lucas acredita que o verdadeiro sucesso está em transformar não apenas corpos, mas também a relação das pessoas com a saúde, o bem-estar e a autoestima.",
