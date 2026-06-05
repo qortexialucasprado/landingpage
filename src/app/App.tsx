@@ -1272,9 +1272,9 @@ export default function App() {
             </header>
           </div>
 
-          {/* Corpo: coluna de leitura em largura confortável */}
+          {/* Corpo: mesma largura útil do container (~1120px no desktop) */}
           <article
-            className="mx-auto max-w-3xl reveal-up delay-100"
+            className="w-full reveal-up delay-100"
             style={{ fontFamily: "var(--font-body)" }}
           >
             <div
