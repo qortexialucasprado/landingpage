@@ -1176,6 +1176,7 @@ export default function App() {
         className="py-24 md:py-32 relative overflow-hidden"
         style={{ backgroundColor: "var(--clr-bg)" }}
         id="sobre"
+        aria-labelledby="sobre-heading"
       >
         <div className="absolute right-0 top-0 w-1/2 h-full opacity-10 blur-md pointer-events-none z-0">
           <img
@@ -1186,8 +1187,16 @@ export default function App() {
         </div>
 
         <div className="container mx-auto px-5 md:px-10 lg:px-20 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <div className="relative reveal-scale">
+          <span
+            className="eyebrow block mb-6 reveal-up"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            Quem é Lucas Prado
+          </span>
+
+          {/* Faixa superior: foto + identidade */}
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(260px,38%)_1fr] gap-10 lg:gap-14 items-start mb-12 lg:mb-14">
+            <div className="relative reveal-scale mx-auto w-full max-w-[360px] lg:max-w-none lg:mx-0">
               <div
                 className="absolute -left-4 md:-left-8 top-10 w-[3px] h-3/4 rounded-full z-20"
                 style={{
@@ -1195,11 +1204,11 @@ export default function App() {
                     "linear-gradient(to bottom, var(--clr-primary), transparent)",
                 }}
               ></div>
-              <div className="relative w-full max-w-[589px] rounded-xl overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.6)]">
+              <div className="relative w-full overflow-hidden rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.6)] aspect-[4/5] lg:max-h-[520px]">
                 <img
                   src={lucasPradoPerfil}
-                  className="block h-auto w-full"
-                  alt="Lucas Prado, perfil"
+                  className="block h-full w-full object-cover object-top"
+                  alt="Lucas Prado, Personal Trainer"
                   width={589}
                   height={900}
                 />
@@ -1207,153 +1216,161 @@ export default function App() {
               </div>
             </div>
 
-            <div className="max-w-xl">
-              <header className="mb-10 reveal-up">
-                <h2
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    color: "white",
-                  }}
-                  className="m-0 font-bold text-4xl md:text-5xl tracking-tight leading-none mb-1"
-                >
-                  LUCAS PRADO
-                </h2>
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    color: "white",
-                  }}
-                  className="m-0 text-base md:text-lg mb-1"
-                >
-                  Personal Trainer
-                </p>
-                <div
-                  className="mb-1 flex flex-wrap items-center justify-between gap-x-8 gap-y-2"
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    color: "var(--clr-primary)",
-                  }}
-                >
-                  <span className="text-[13px] font-normal md:text-[15px]">
-                    Bacharel em Educação Física
-                  </span>
-                  <span className="text-[13px] font-normal md:text-[15px]">
-                    CREFI 077075-G/RJ
-                  </span>
-                </div>
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    color: "var(--clr-text-lo)",
-                  }}
-                  className="m-0 text-[13px] font-normal md:text-[15px]"
-                >
-                  Alta performance · Avaliação física · Especialização em
-                  fisiologia do exercício
-                </p>
-              </header>
-
+            <header className="flex flex-col justify-center reveal-up min-w-0">
+              <h2
+                id="sobre-heading"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: "white",
+                }}
+                className="m-0 font-bold text-4xl md:text-5xl tracking-tight leading-none mb-1"
+              >
+                LUCAS PRADO
+              </h2>
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  color: "white",
+                }}
+                className="m-0 text-base md:text-lg mb-1"
+              >
+                Personal Trainer
+              </p>
               <div
-                className="space-y-6 mb-12 reveal-up delay-100"
+                className="mb-1 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 max-w-md lg:max-w-none"
+                style={{
+                  fontFamily: "var(--font-body)",
+                  color: "var(--clr-primary)",
+                }}
+              >
+                <span className="text-[13px] font-normal md:text-[15px]">
+                  Bacharel em Educação Física
+                </span>
+                <span className="text-[13px] font-normal md:text-[15px]">
+                  CREFI 077075-G/RJ
+                </span>
+              </div>
+              <p
                 style={{
                   fontFamily: "var(--font-body)",
                   color: "var(--clr-text-lo)",
                 }}
+                className="m-0 text-[13px] font-normal md:text-[15px] mb-6 lg:mb-8"
               >
-                <p className="text-base leading-relaxed">
-                  Lucas Prado é Personal Trainer com atuação
-                  presencial, online e a domicílio. Especialista
-                  em emagrecimento, hipertrofia,
-                  condicionamento, público feminino e terceira
-                  idade.
-                </p>
-                <p className="text-base leading-relaxed">
-                  A filosofia é simples: resultado não vem de
-                  método complicado, vem de consistência,
-                  acompanhamento real e um protocolo feito para
-                  você, não para uma planilha genérica.
-                </p>
-                <p className="text-base leading-relaxed">
-                  Cada aluno atendido é uma prova de que o
-                  processo funciona quando é feito com seriedade
-                  e sem frescura.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 border-t border-white/10 reveal-up delay-200">
-                {[
-                  {
-                    icon: "solar:diploma-linear",
-                    label: "FORMAÇÃO",
-                    value: "Educação Física",
-                  },
-                  {
-                    icon: "solar:target-linear",
-                    label: "ESPECIALIDADES",
-                    value: "Emagrecimento, Hipertrofia",
-                  },
-                  {
-                    icon: "solar:map-point-linear",
-                    label: "ATUAÇÃO",
-                    value: "Presencial, Online, Domicílio",
-                  },
-                  {
-                    icon: "solar:instagram-linear",
-                    label: "INSTAGRAM",
-                    value: `@${siteEnv.instagramHandle}`,
-                    link: siteEnv.instagramUrl,
-                  },
-                ].map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-3"
-                  >
-                    <iconify-icon aria-hidden="true"
-                      icon={item.icon}
-                      style={{ color: "var(--clr-primary)" }}
-                      className="mt-1"
-                      width="20"
-                    ></iconify-icon>
-                    <div>
-                      <h4
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          color: "var(--clr-text-disabled)",
-                        }}
-                        className="text-caption mb-1"
-                      >
-                        {item.label}
-                      </h4>
-                      {item.link ? (
-                        <a
-                          href={item.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            color: "var(--clr-text-mid)",
-                          }}
-                          className="text-base md:text-sm hover:text-[#2979FF] transition-colors"
-                        >
-                          {item.value}
-                        </a>
-                      ) : (
-                        <p
-                          style={{
-                            fontFamily: "var(--font-body)",
-                            color: "var(--clr-text-mid)",
-                          }}
-                          className="text-base md:text-sm"
-                        >
-                          {item.value}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                Alta performance · Avaliação física · Especialização em
+                fisiologia do exercício
+              </p>
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: "white",
+                }}
+                className="m-0 font-bold text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight"
+              >
+                TRANSFORMANDO VIDAS ATRAVÉS DO TREINAMENTO INTELIGENTE.
+              </h3>
+            </header>
           </div>
+
+          {/* Corpo: coluna de leitura em largura confortável */}
+          <article
+            className="mx-auto max-w-3xl reveal-up delay-100"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            <div
+              className="space-y-5 mb-10"
+              style={{ color: "var(--clr-text-lo)" }}
+            >
+              {[
+                "Profissional de Educação Física atuando como Personal Trainer, comprometido em transformar vidas através do movimento.",
+                "Muito mais do que prescrever exercícios, Lucas Prado acredita que cada aluno possui uma história única, objetivos específicos e desafios que merecem atenção individualizada. Sua missão é ajudar pessoas a conquistarem resultados reais através de um treinamento planejado, eficiente e adaptado à realidade de cada aluno.",
+                "Sua trajetória é marcada pela dedicação, disciplina e busca constante por aperfeiçoamento profissional. Com uma atuação pautada na ciência do exercício, no acompanhamento próximo e no compromisso com a excelência, Lucas construiu sua reputação entregando um serviço sério, humanizado e focado em resultados duradouros.",
+                "O que realmente diferencia seu trabalho é o envolvimento com a evolução de cada pessoa atendida. Mais do que montar treinos, ele acompanha, orienta, corrige, incentiva e permanece presente durante toda a jornada, garantindo que cada etapa seja executada com segurança e eficiência.",
+                "A determinação em entregar o melhor resultado possível para seus alunos é um dos pilares da sua atuação profissional. Cada planejamento é desenvolvido de forma estratégica, respeitando as necessidades, limitações e metas individuais, sempre com foco na evolução contínua e na construção de hábitos sustentáveis.",
+                "Especialista em emagrecimento, hipertrofia, condicionamento físico, treinamento para o público feminino e terceira idade, Lucas acredita que o verdadeiro sucesso está em transformar não apenas corpos, mas também a relação das pessoas com a saúde, o bem-estar e a autoestima.",
+                "Seu propósito é oferecer um atendimento diferenciado, baseado em profissionalismo, comprometimento e responsabilidade, ajudando cada aluno a alcançar sua melhor versão através de um método eficiente e de um acompanhamento genuíno.",
+                "Porque resultados extraordinários são construídos com dedicação, consistência e a parceria de um profissional que se compromete verdadeiramente com a sua evolução.",
+              ].map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 40)}
+                  className="m-0 text-base leading-relaxed"
+                >
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            <div className="mb-10 reveal-up delay-200">
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: "white",
+                }}
+                className="m-0 mb-4 font-bold text-xl md:text-2xl tracking-tight"
+              >
+                Áreas de Atuação
+              </h3>
+              <ul
+                className="m-0 space-y-2 pl-5 text-base leading-relaxed marker:text-[var(--clr-primary)]"
+                style={{
+                  color: "var(--clr-text-lo)",
+                  listStyleType: "disc",
+                }}
+              >
+                {[
+                  "Emagrecimento e redução de gordura corporal",
+                  "Hipertrofia e ganho de massa muscular",
+                  "Condicionamento físico",
+                  "Treinamento para público feminino",
+                  "Treinamento para terceira idade",
+                  "Mobilidade, alongamento e qualidade de vida",
+                  "Atendimento presencial, online e a domicílio",
+                ].map((area) => (
+                  <li key={area}>{area}</li>
+                ))}
+              </ul>
+            </div>
+
+            <footer className="border-t border-white/10 pt-8 reveal-up delay-300">
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  color: "white",
+                }}
+                className="m-0 mb-1 font-semibold text-lg tracking-tight"
+              >
+                Lucas Prado
+              </p>
+              <p
+                style={{
+                  color: "var(--clr-text-lo)",
+                }}
+                className="m-0 mb-1 text-base"
+              >
+                Personal Trainer · Profissional de Educação Física
+              </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  color: "var(--clr-primary)",
+                }}
+                className="m-0 mb-6 text-caption"
+              >
+                CREF 077075-G/RJ
+              </p>
+              <blockquote
+                className="m-0 border-l-2 pl-4 text-base italic leading-relaxed"
+                style={{
+                  color: "var(--clr-text-mid)",
+                  borderColor: "var(--clr-primary)",
+                }}
+              >
+                Meu compromisso não é apenas montar o seu treino. É
+                acompanhar sua jornada, potencializar seus resultados e
+                fazer parte da sua transformação.
+              </blockquote>
+            </footer>
+          </article>
         </div>
       </section>
 
