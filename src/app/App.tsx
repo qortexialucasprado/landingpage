@@ -959,7 +959,7 @@ export default function App() {
         ></div>
 
         <div className="container mx-auto px-5 md:px-10 lg:px-20">
-          <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
+          <div className="text-center max-w-3xl mx-auto lg:max-w-none mb-16 md:mb-24">
             <span
               className="eyebrow block mb-6 reveal-up"
               style={{ fontFamily: "var(--font-mono)" }}
