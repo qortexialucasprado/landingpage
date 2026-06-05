@@ -1269,6 +1269,27 @@ export default function App() {
               >
                 TRANSFORMANDO VIDAS ATRAVÉS DO TREINAMENTO INTELIGENTE.
               </h3>
+              <div
+                className="mt-6 space-y-5"
+                style={{
+                  fontFamily: "var(--font-body)",
+                  color: "var(--clr-text-lo)",
+                }}
+              >
+                <p className="m-0 text-base leading-relaxed">
+                  Profissional de Educação Física atuando como Personal
+                  Trainer, comprometido em transformar vidas através do
+                  movimento.
+                </p>
+                <p className="m-0 text-base leading-relaxed">
+                  Muito mais do que prescrever exercícios, Lucas Prado
+                  acredita que cada aluno possui uma história única,
+                  objetivos específicos e desafios que merecem atenção
+                  individualizada. Sua missão é ajudar pessoas a
+                  conquistarem resultados reais através de um treinamento
+                  planejado, eficiente e adaptado à realidade de cada aluno.
+                </p>
+              </div>
             </header>
           </div>
 
@@ -1282,8 +1303,6 @@ export default function App() {
               style={{ color: "var(--clr-text-lo)" }}
             >
               {[
-                "Profissional de Educação Física atuando como Personal Trainer, comprometido em transformar vidas através do movimento.",
-                "Muito mais do que prescrever exercícios, Lucas Prado acredita que cada aluno possui uma história única, objetivos específicos e desafios que merecem atenção individualizada. Sua missão é ajudar pessoas a conquistarem resultados reais através de um treinamento planejado, eficiente e adaptado à realidade de cada aluno.",
                 "Sua trajetória é marcada pela dedicação, disciplina e busca constante por aperfeiçoamento profissional. Com uma atuação pautada na ciência do exercício, no acompanhamento próximo e no compromisso com a excelência, Lucas construiu sua reputação entregando um serviço sério, humanizado e focado em resultados duradouros.",
                 "O que realmente diferencia seu trabalho é o envolvimento com a evolução de cada pessoa atendida. Mais do que montar treinos, ele acompanha, orienta, corrige, incentiva e permanece presente durante toda a jornada, garantindo que cada etapa seja executada com segurança e eficiência.",
                 "A determinação em entregar o melhor resultado possível para seus alunos é um dos pilares da sua atuação profissional. Cada planejamento é desenvolvido de forma estratégica, respeitando as necessidades, limitações e metas individuais, sempre com foco na evolução contínua e na construção de hábitos sustentáveis.",
